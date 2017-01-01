@@ -1,5 +1,5 @@
 /*
- *  EOS M 2.0.2 consts
+ *  EOS M 2.0.3 consts
  */
 
 #define CANON_SHUTTER_RATING 100000
@@ -46,7 +46,7 @@
 
 // for gui_main_task
 #define GMT_NFUNCS 7
-#define GMT_FUNCTABLE 0xFF7F9624 // dec gui_main_task
+#define GMT_FUNCTABLE 0xFF7F96D8 // dec gui_main_task
 
 
 

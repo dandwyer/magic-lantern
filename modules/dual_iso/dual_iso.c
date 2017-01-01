@@ -869,7 +869,7 @@ static unsigned int isoless_init()
         CMOS_EXPECTED_FLAG = 3;
     }
 
-    else if (is_camera("EOSM", "2.0.2"))
+    else if (is_camera("EOSM", "2.0.3"))
     {
         is_eosm = 1;    
         

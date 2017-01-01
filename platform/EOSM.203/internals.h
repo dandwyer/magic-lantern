@@ -1,5 +1,5 @@
 /**
- * Camera internals for EOS-M 2.0.2
+ * Camera internals for EOS-M 2.0.3
  */
 
 /** Properties are persistent (saved in NVRAM) => a mistake can cause permanent damage. Undefine this for new ports. */
