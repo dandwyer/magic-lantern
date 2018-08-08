@@ -236,16 +236,40 @@ Whatever is in the 'data' field of this instance is saved. Only numbers,
 strings and tables can be saved (no functions, threads or userdata)
 @function save
 ]]
+@function saving
+]]
+function config:saving()
+  -- Copy values of each menu
+  for k,v in pairs(self.data) do
+    -- k -> A table representing a menu entry or a single entry of a simple config
+    if type(self.data[k]) == "table" then
+      local menu = self.data[k].menu
+      -- Copy menu and save values into .cfg
+      recursiveCopy(v,menu,self.data[k],nil)
+    end
+  end
+
+end
+
+--[[---------------------------------------------------------------------------
+Manually save the config data to file (data is saved automatically when the
+ML backend does it's config saving, so calling this function is unecessary
+unless you want to do a manual save).
+Whatever is in the 'data' field of this instance is saved. Only numbers,
+strings and tables can be saved (no functions, threads or userdata)
+@function save
+]]
 function config:save()
     local f = io.open(self.filename,"w")
-    f:write("return ")
     assert(f ~= nil, "Could not save config: "..self.filename)
-    config.serialize(f,self.data)
+    -- Serialize data into a loadable format
+    f:write("return ")
+    config.serialize(f,self.data,1)
     f:close()
 end
 
 --private
-function config.serialize(f,o)
+function config.serialize(f,o,lvl)
     if type(o) == "number" or type(o) == "boolean" then
         f:write(tostring(o))
     elseif type(o) == "string" then
@@ -254,13 +278,17 @@ function config.serialize(f,o)
         f:write("{\n")
         for k,v in pairs(o) do
           if k ~= "menu" then
-            f:write("\t[")
-            config.serialize(f,k)
+            -- Indent starting line
+            f:write(string.rep("\t", lvl))
+            f:write("[")
+            config.serialize(f,k,lvl+1)
             f:write("] = ")
-            config.serialize(f,v)
+            config.serialize(f,v,lvl+1)
             f:write(",\n")
           end
         end
+        -- Indent closing bracket
+        f:write(string.rep("\t", lvl-1))
         f:write("}")
     else
         --something we don't know how to serialize, just skip it
