@@ -76,8 +76,8 @@ void mlv_fill_elns(mlv_elns_hdr_t *hdr, uint64_t start_timestamp){
     strncpy((char *)hdr->lensName, bufName, 64);
     hdr->focalLengthMin = lens_info.lens_focal_min;
     hdr->focalLengthMax = lens_info.lens_focal_max;
-    hdr->apertureMin = RAW2VALUE(aperture, lens_info.raw_aperture_min) / 10.0;
-    hdr->apertureMax = RAW2VALUE(aperture, lens_info.raw_aperture_max) / 10.0;
+    hdr->apertureMin = RAW2VALUE(aperture, lens_info.raw_aperture_min) * 10.0;
+    hdr->apertureMax = RAW2VALUE(aperture, lens_info.raw_aperture_max) * 10.0;
     hdr->version = lens_info.lens_version;
     hdr->extenderInfo = lens_info.lens_extender;
     hdr->capabilities = lens_info.lens_capabilities;

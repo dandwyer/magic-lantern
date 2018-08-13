@@ -2870,8 +2870,8 @@ read_headers:
                     print_msg(MSG_INFO, "     Name:                '%s'\n", elns_info.lensName);
                     print_msg(MSG_INFO, "     Focal Length Min:    %d mm\n", elns_info.focalLengthMin);
                     print_msg(MSG_INFO, "     Focal Length Max:    %d mm\n", elns_info.focalLengthMax);
-                    print_msg(MSG_INFO, "     Aperture Min:        f/%.2f\n", (double)elns_info.apertureMin);
-                    print_msg(MSG_INFO, "     Aperture Max:        f/%.2f\n", (double)elns_info.apertureMax);
+                    print_msg(MSG_INFO, "     Aperture Min:        f/%.2f\n", (double)elns_info.apertureMin / 100.0f);
+                    print_msg(MSG_INFO, "     Aperture Max:        f/%.2f\n", (double)elns_info.apertureMax / 100.0f);
                     print_msg(MSG_INFO, "     Version:             %d\n", elns_info.version);
                     print_msg(MSG_INFO, "     Extender Info:       0x%02X\n", elns_info.extenderInfo);
                     print_msg(MSG_INFO, "     Capabilities:        0x%02X\n", elns_info.capabilities);
