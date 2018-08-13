@@ -64,24 +64,33 @@ void mlv_fill_lens(mlv_lens_hdr_t *hdr, uint64_t start_timestamp)
     strncpy((char *)hdr->lensSerial, buf, 32);
 }
 
-void mlv_fill_elns(mlv_elns_hdr_t *hdr, uint64_t start_timestamp){
+void mlv_fill_elns(mlv_elns_hdr_t **hdr, uint64_t start_timestamp){
+    /* Calculate total block length: header + fixed data + variable lensName string */
+    int string_length = strlen(lens_info.name);
+    int block_length = (string_length + sizeof(mlv_elns_hdr_t) + 3) & ~3;
+    mlv_elns_hdr_t *header = malloc(block_length);
+
     /* prepare header */
-    mlv_set_type((mlv_hdr_t *)hdr, "ELNS");
-    mlv_set_timestamp((mlv_hdr_t *)hdr, start_timestamp);
-    hdr->blockSize = sizeof(mlv_elns_hdr_t);
+    mlv_set_type((mlv_hdr_t *)header, "ELNS");
+    mlv_set_timestamp((mlv_hdr_t *)header, start_timestamp);
+    header->blockSize = block_length;
 
-    char bufName[65];
-    snprintf(bufName, 64, "%s", lens_info.name);
+    /* Fill data */
+    header->focalLengthMin = lens_info.lens_focal_min;
+    header->focalLengthMax = lens_info.lens_focal_max;
+    header->apertureMin = RAW2VALUE(aperture, lens_info.raw_aperture_min) * 10.0;
+    header->apertureMax = RAW2VALUE(aperture, lens_info.raw_aperture_max) * 10.0;
+    header->version = lens_info.lens_version;
+    header->extenderInfo = lens_info.lens_extender;
+    header->capabilities = lens_info.lens_capabilities;
+    header->chipped = lens_info.lens_exists;
 
-    strncpy((char *)hdr->lensName, bufName, 64);
-    hdr->focalLengthMin = lens_info.lens_focal_min;
-    hdr->focalLengthMax = lens_info.lens_focal_max;
-    hdr->apertureMin = RAW2VALUE(aperture, lens_info.raw_aperture_min) * 10.0;
-    hdr->apertureMax = RAW2VALUE(aperture, lens_info.raw_aperture_max) * 10.0;
-    hdr->version = lens_info.lens_version;
-    hdr->extenderInfo = lens_info.lens_extender;
-    hdr->capabilities = lens_info.lens_capabilities;
-    hdr->chipped = lens_info.lens_exists;
+    /* Store lensName string at the end of mlv_elns_hdr_t */
+    char *lens_hdr_payload = (char *)&header[1];
+    snprintf(lens_hdr_payload, string_length + 1, "%s", lens_info.name);
+
+    /* update block with new values */
+    *hdr = header;
 }
 
 void mlv_fill_wbal(mlv_wbal_hdr_t *hdr, uint64_t start_timestamp)
