@@ -45,6 +45,7 @@ local function insertMenu(cfg,m)
   cfg[m.name] = tmp
 end
 
+-- TODO: Refactor function body
 local function recursiveCopy(o,m,cfg,s)
   local tmp = {}
   -- Copy value
@@ -79,8 +80,26 @@ local function recursiveCopy(o,m,cfg,s)
 
 end
 
+-- Load config from file if exists, otherwise create a new table in memory
 local create_internal = function(default,thisfile)
+  local filename = string.format("%s%s.lcf", dryos.config_dir.path,thisfile)
+  local cfg = config.findConfig(filename)
 
+  if cfg == nil then
+    -- Create a config from scratch
+    cfg = {}
+    cfg.filename = filename
+    cfg.default = default -- TODO: Replicate .data's structure
+    cfg.data = {}
+    -- check for existing .cfg to load
+    setmetatable(cfg,config)
+    -- load previus config from file if available
+    cfg.data = cfg:load()
+    -- add to data structure
+    table.insert(config.configs,cfg)
+  end
+
+  return cfg
 end
 
 local function recursiveLoad(m,cfg)
@@ -108,33 +127,17 @@ Create a new config instance, filename will be determined automagically
 ]]
 function config.create(default)
   local short_name = string.match(debug.getinfo(2,"S").short_src,"/([^/%.]+)%.[^/%.]+$")
-  local filename = string.format("%s%s.lcf", dryos.config_dir.path,short_name)
+  local cfg = create_internal(default,short_name)
 
-  local cfg = config.findConfig(filename)
-  if cfg ~= nil then
-    -- Append config data
-    for k,v in pairs(default) do
-      cfg.data[k] = v
-    end
-  else
-    -- Create a config from scratch
-    cfg = {}
-    cfg.filename = filename
-    cfg.default = default -- TODO: Replicate .data's structure
-    cfg.data = {}
-    -- check for existing .cfg to load
-    setmetatable(cfg,config)
-    cfg.data = cfg:load()
-    if cfg.data == nil then
-      -- Create a config from scratch
-      for k,v in pairs(default) do
-        cfg.data[k] = v
-      end
-    end
-    table.insert(config.configs,cfg)
-   end
+  -- Append config data
+  for k,v in pairs(default) do
+    cfg.default[k] = v
+    cfg.data[k] = v
+  end
 
-   return cfg
+  --  cfg.default = default -- TODO: Replicate .data's structure
+
+  return cfg
 end
 
 --[[---------------------------------------------------------------------------
@@ -158,37 +161,18 @@ function config.create_from_menu(m)
     insertMenu(default,m)
 
     local short_name = string.match(debug.getinfo(2,"S").short_src,"/([^/%.]+)%.[^/%.]+$")
-    local filename = string.format("%s%s.lcf", dryos.config_dir.path,short_name)
+    local cfg = create_internal(default,short_name)
 
-    local cfg = config.findConfig(filename)
-    if cfg ~= nil then
-      -- Already present in config.configs, append menu
-      if cfg.data[m.name] ~= nil then
-        -- Avoid overwriting values when loading config form .cfg
-        cfg.data[m.name].menu = m
-        recursiveLoad(m,cfg.data[m.name])
-      else
-        insertMenu(cfg.data,m)
-      end
+    if cfg.data[m.name] == nil then
+      -- Create a config for menu from scratch
+      insertMenu(cfg.data,m)
     else
-      -- Create a config from scratch
-      cfg = {}
-      cfg.filename = filename
-      cfg.default = default -- TODO: Replicate .data's structure
-      cfg.data = {}
-      -- check for existing .cfg to load
-      setmetatable(cfg,config)
-      cfg.data = cfg:load()
-      if cfg.data == nil then
-        -- Create a config from scratch
-        insertMenu(cfg.data,m)
-      else
-        -- load values to menu
-        cfg.data[m.name].menu = m
-        recursiveLoad(m,cfg.data[m.name])
-      end
-      table.insert(config.configs,cfg)
-     end
+      -- Already present in config.configs, load values to menu from config
+      cfg.data[m.name].menu = m
+      recursiveLoad(m,cfg.data[m.name])
+    end
+
+    --    cfg.default = default -- TODO: Replicate .data's structure
 
     return cfg.data[m.name]
 end
