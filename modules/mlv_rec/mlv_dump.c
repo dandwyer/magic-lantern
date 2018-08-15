@@ -2884,7 +2884,6 @@ read_headers:
 
                 if(verbose)
                 {
-                    //TODO: Check Aperture Min/Max and if other fields are needed
                     print_msg(MSG_INFO, "     Name:                '%s'\n", buf);
                     print_msg(MSG_INFO, "     Focal Length Min:    %d mm\n", block_hdr.focalLengthMin);
                     print_msg(MSG_INFO, "     Focal Length Max:    %d mm\n", block_hdr.focalLengthMax);

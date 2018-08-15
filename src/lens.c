@@ -1955,7 +1955,7 @@ static struct menu_entry tweak_menus[] = {
    {
         .name = "Lens Info Prefs",
         .select   = menu_open_submenu,
-	.submenu_width = 700,
+        .submenu_width = 700,
         .children =  (struct menu_entry[]) {
             #ifndef CONFIG_FULLFRAME
             {
