@@ -197,32 +197,6 @@ update your config.data when the config is being saved
 @function saving
 ]]
 function config:saving()
-local short_name = string.match(debug.getinfo(2,"S").short_src,"/([^/%.]+)%.[^/%.]+$")
-local filename = string.format("%s%s.lcf", dryos.config_dir.path,short_name)
-
-  -- Copy values of each menu
-  for k,v in pairs(self.data) do
-    -- k -> A table representing a menu entry or a single entry of a simple config
-    if type(self.data[k]) == "table" then
-      local menu = self.data[k].menu
-      -- Copy menu and save values into .cfg
-      recursiveCopy(v,menu,self.data[k],nil)
-    end
-  end
-
-end
-
---[[---------------------------------------------------------------------------
-Manually save the config data to file (data is saved automatically when the
-ML backend does it's config saving, so calling this function is unecessary
-unless you want to do a manual save).
-Whatever is in the 'data' field of this instance is saved. Only numbers,
-strings and tables can be saved (no functions, threads or userdata)
-@function save
-]]
-@function saving
-]]
-function config:saving()
   -- Copy values of each menu
   for k,v in pairs(self.data) do
     -- k -> A table representing a menu entry or a single entry of a simple config
