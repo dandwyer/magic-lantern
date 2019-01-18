@@ -2832,7 +2832,11 @@ read_headers:
 
                 if(verbose)
                 {
-                    print_msg(MSG_INFO, "     Name:        '%s'\n", lens_info.lensName);
+                    /* Ensure lens name is null terminated to avoid printing serial number */
+                    char name[33];
+                    snprintf(name, sizeof(name), "%s", lens_info.lensName);
+
+                    print_msg(MSG_INFO, "     Name:        '%s'\n", name);
                     print_msg(MSG_INFO, "     Serial:      '%s'\n", lens_info.lensSerial);
                     print_msg(MSG_INFO, "     Focal Len:   %d mm\n", lens_info.focalLength);
                     print_msg(MSG_INFO, "     Focus Dist:  %d mm\n", lens_info.focalDist);
