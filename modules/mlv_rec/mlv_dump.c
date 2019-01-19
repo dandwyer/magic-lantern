@@ -1610,6 +1610,7 @@ int main (int argc, char *argv[])
     memset(&main_header, 0x00, sizeof(mlv_file_hdr_t));
 
     char info_string[256] = "(MLV Video without INFO blocks)";
+    char elns_string[1024] = "";
 
     /* this table contains the XREF chunk read from idx file, if existing */
     mlv_xref_hdr_t *block_xref = NULL;
@@ -2663,9 +2664,13 @@ read_headers:
                             dng_set_aperture(lens_info.aperture, 100);
                             dng_set_camname((char*)unique_camname);
                             dng_set_description((char*)info_string);
-                            dng_set_lensmodel((char*)lens_info.lensName);
                             dng_set_focal(lens_info.focalLength, 1);
                             dng_set_iso(expo_info.isoValue);
+
+                            /* Use Lens Model from ELNS Block if present */
+                            char* lens = (elns_string != NULL) && (strlen(elns_string) > strlen(lens_info.lensName)) ? elns_string : lens_info.lensName;
+                            dng_set_lensmodel(lens);
+
 
                             //dng_set_wbgain(1024, wbal_info.wbgain_r, 1024, wbal_info.wbgain_g, 1024, wbal_info.wbgain_b);
 
@@ -2827,7 +2832,11 @@ read_headers:
 
                 if(verbose)
                 {
-                    print_msg(MSG_INFO, "     Name:        '%s'\n", lens_info.lensName);
+                    /* Ensure lens name is null terminated to avoid printing serial number */
+                    char name[33];
+                    snprintf(name, sizeof(name), "%s", lens_info.lensName);
+
+                    print_msg(MSG_INFO, "     Name:        '%s'\n", name);
                     print_msg(MSG_INFO, "     Serial:      '%s'\n", lens_info.lensSerial);
                     print_msg(MSG_INFO, "     Focal Len:   %d mm\n", lens_info.focalLength);
                     print_msg(MSG_INFO, "     Focus Dist:  %d mm\n", lens_info.focalDist);
@@ -2851,31 +2860,43 @@ read_headers:
             }
             else if(!memcmp(buf.blockType, "ELNS", 4))
             {
+                mlv_elns_hdr_t block_hdr;
                 uint32_t hdr_size = MIN(sizeof(mlv_elns_hdr_t), buf.blockSize);
 
-                if(fread(&elns_info, hdr_size, 1, in_file) != 1)
+                if(fread(&block_hdr, hdr_size, 1, in_file) != 1)
                 {
                     print_msg(MSG_ERROR, "File ends in the middle of a block\n");
                     goto abort;
                   }
 
-                /* skip remaining data, if there is any */
-                file_set_pos(in_file, position + elns_info.blockSize, SEEK_SET);
+                lua_handle_hdr(lua_state, buf.blockType, &block_hdr, sizeof(block_hdr));
 
-                lua_handle_hdr(lua_state, buf.blockType, &elns_info, sizeof(elns_info));
+                /* get the string length and malloc a buffer for that string */
+                int str_length = block_hdr.blockSize - hdr_size;
+                char *buf = malloc(str_length + 1);
+
+                if(fread(buf, str_length, 1, in_file) != 1)
+                {
+                    free(buf);
+                    print_msg(MSG_ERROR, "File ends in the middle of a block\n");
+                    goto abort;
+                }
+
+                /* Fill lens model data for DNG processing */
+                strncpy(elns_string, buf, str_length);
+                elns_string[str_length] = '\000';
 
                 if(verbose)
                 {
-                    //TODO: Check Aperture Min/Max and if other fields are needed
-                    print_msg(MSG_INFO, "     Name:                '%s'\n", elns_info.lensName);
-                    print_msg(MSG_INFO, "     Focal Length Min:    %d mm\n", elns_info.focalLengthMin);
-                    print_msg(MSG_INFO, "     Focal Length Max:    %d mm\n", elns_info.focalLengthMax);
-                    print_msg(MSG_INFO, "     Aperture Min:        f/%.2f\n", (double)elns_info.apertureMin);
-                    print_msg(MSG_INFO, "     Aperture Max:        f/%.2f\n", (double)elns_info.apertureMax);
-                    print_msg(MSG_INFO, "     Version:             %d\n", elns_info.version);
-                    print_msg(MSG_INFO, "     Extender Info:       0x%02X\n", elns_info.extenderInfo);
-                    print_msg(MSG_INFO, "     Capabilities:        0x%02X\n", elns_info.capabilities);
-                    print_msg(MSG_INFO, "     Chipped:             0x%02X\n", elns_info.chipped);
+                    print_msg(MSG_INFO, "     Name:                '%s'\n", buf);
+                    print_msg(MSG_INFO, "     Focal Length Min:    %d mm\n", block_hdr.focalLengthMin);
+                    print_msg(MSG_INFO, "     Focal Length Max:    %d mm\n", block_hdr.focalLengthMax);
+                    print_msg(MSG_INFO, "     Aperture Min:        f/%.2f\n", (double)block_hdr.apertureMin / 100.0f);
+                    print_msg(MSG_INFO, "     Aperture Max:        f/%.2f\n", (double)block_hdr.apertureMax / 100.0f);
+                    print_msg(MSG_INFO, "     Version:             %d\n", block_hdr.version);
+                    print_msg(MSG_INFO, "     Extender Info:       0x%02X\n", block_hdr.extenderInfo);
+                    print_msg(MSG_INFO, "     Capabilities:        0x%02X\n", block_hdr.capabilities);
+                    print_msg(MSG_INFO, "     Chipped:             0x%02X\n", block_hdr.chipped);
                 }
 
                 if(mlv_output && !no_metadata_mode && (!extract_block || !strncasecmp(extract_block, (char*)elns_info.blockType, 4)))
@@ -2888,6 +2909,9 @@ read_headers:
                         goto abort;
                     }
                 }
+
+                free(buf);
+
             }
             else if(!memcmp(buf.blockType, "INFO", 4))
             {

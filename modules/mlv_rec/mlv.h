@@ -175,8 +175,7 @@ typedef struct {
     uint8_t     extenderInfo;    /* extender information, if provided by camera       */
     uint8_t     capabilities;    /* capability information, if provided by camera     */
     uint8_t     chipped;         /* when not zero, lens is communicating with camera  */
-    uint8_t     lensName[64];     /* full lens string, null terminated                 */
-    // TODO: Review Specs
+ /* uint8_t     lensName[variable];    full lens string, null terminated                 */
 }  mlv_elns_hdr_t;
 
 typedef struct {
@@ -302,10 +301,10 @@ typedef struct {
 void mlv_fill_rtci(mlv_rtci_hdr_t *hdr, uint64_t start_timestamp);
 void mlv_fill_expo(mlv_expo_hdr_t *hdr, uint64_t start_timestamp);
 void mlv_fill_lens(mlv_lens_hdr_t *hdr, uint64_t start_timestamp);
-void mlv_fill_elns(mlv_elns_hdr_t *hdr, uint64_t start_timestamp);
 void mlv_fill_idnt(mlv_idnt_hdr_t *hdr, uint64_t start_timestamp);
 void mlv_fill_wbal(mlv_wbal_hdr_t *hdr, uint64_t start_timestamp);
 void mlv_fill_styl(mlv_styl_hdr_t *hdr, uint64_t start_timestamp);
+void mlv_fill_elns(mlv_elns_hdr_t **hdr, uint64_t start_timestamp);
 void mlv_build_vers(mlv_vers_hdr_t **hdr, uint64_t start_timestamp, const char *version_string);
 
 /* randomize the 64 bits passed in parameter using LFSR */

@@ -25,10 +25,10 @@ extern WEAK_FUNC(ret_0) void display_filter_get_buffers(uint32_t** src_buf, uint
 extern WEAK_FUNC(ret_0) void mlv_fill_rtci(mlv_rtci_hdr_t *hdr, uint64_t start_timestamp);
 extern WEAK_FUNC(ret_0) void mlv_fill_expo(mlv_expo_hdr_t *hdr, uint64_t start_timestamp);
 extern WEAK_FUNC(ret_0) void mlv_fill_lens(mlv_lens_hdr_t *hdr, uint64_t start_timestamp);
-extern WEAK_FUNC(ret_0) void mlv_fill_elns(mlv_elns_hdr_t *hdr, uint64_t start_timestamp);
 extern WEAK_FUNC(ret_0) void mlv_fill_idnt(mlv_idnt_hdr_t *hdr, uint64_t start_timestamp);
 extern WEAK_FUNC(ret_0) void mlv_fill_wbal(mlv_wbal_hdr_t *hdr, uint64_t start_timestamp);
 extern WEAK_FUNC(ret_0) void mlv_fill_styl(mlv_styl_hdr_t *hdr, uint64_t start_timestamp);
+extern WEAK_FUNC(ret_0) void mlv_fill_elns(mlv_elns_hdr_t **hdr, uint64_t start_timestamp);
 extern WEAK_FUNC(ret_0_long) uint64_t mlv_generate_guid();
 extern WEAK_FUNC(ret_0) void mlv_init_fileheader(mlv_file_hdr_t *hdr);
 extern WEAK_FUNC(ret_0) void mlv_set_type(mlv_hdr_t *hdr, char *type);
@@ -299,11 +299,11 @@ static int save_mlv(struct raw_info * raw_info, int capture_time_ms)
     mlv_rtci_hdr_t rtci_hdr;
     mlv_expo_hdr_t expo_hdr;
     mlv_lens_hdr_t lens_hdr;
-    mlv_elns_hdr_t elns_hdr;
     mlv_idnt_hdr_t idnt_hdr;
     mlv_wbal_hdr_t wbal_hdr;
     mlv_styl_hdr_t styl_hdr;
     mlv_vidf_hdr_t vidf_hdr;
+    mlv_elns_hdr_t *elns_hdr;
     FILE* save_file = NULL;    
     
     /* default case: use last filename */
@@ -423,7 +423,7 @@ static int save_mlv(struct raw_info * raw_info, int capture_time_ms)
     if (FIO_WriteFile(save_file, &rtci_hdr, rtci_hdr.blockSize) != (int)rtci_hdr.blockSize) goto write_error;
     if (FIO_WriteFile(save_file, &expo_hdr, expo_hdr.blockSize) != (int)expo_hdr.blockSize) goto write_error;
     if (FIO_WriteFile(save_file, &lens_hdr, lens_hdr.blockSize) != (int)lens_hdr.blockSize) goto write_error;
-    if (FIO_WriteFile(save_file, &elns_hdr, elns_hdr.blockSize) != (int)elns_hdr.blockSize) goto write_error;
+    if (FIO_WriteFile(save_file, elns_hdr, (*elns_hdr).blockSize) != (int)(*elns_hdr).blockSize) goto write_error;
 
     memset(&vidf_hdr, 0, sizeof(mlv_vidf_hdr_t));
     mlv_set_type((mlv_hdr_t *)&vidf_hdr, "VIDF");
