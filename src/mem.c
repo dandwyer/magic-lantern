@@ -582,6 +582,7 @@ static void *memcheck_malloc( unsigned int len, const char *file, unsigned int l
     memcheck_add(ptr, file, line);
     
     /* keep track of allocated memory and update history */
+    unsigned int state = cli();
     allocators[allocator_index].num_blocks++;
     allocators[allocator_index].mem_used += len + 2 * MEM_SEC_ZONE;
     alloc_total += len;
@@ -589,6 +590,7 @@ static void *memcheck_malloc( unsigned int len, const char *file, unsigned int l
     alloc_total_peak_with_memcheck = MAX(alloc_total_peak_with_memcheck, alloc_total_with_memcheck);
     history[history_index] = MIN(alloc_total_with_memcheck / 1024, USHRT_MAX);
     history_index = MOD(history_index + 1, HISTORY_ENTRIES);
+    sei(state);
     
     return (void*)(ptr + MEM_SEC_ZONE);
 }
@@ -788,6 +790,43 @@ static int choose_allocator(int size, unsigned int flags)
     return -1;
 }
 
+static void * check_and_adjust_ptr(void * ptr, size_t size, unsigned int flags, const char* file, unsigned int line, int allocator_index)
+{
+    if (!ptr)
+    {
+        /* didn't work? */
+        snprintf(last_error_msg_short, sizeof(last_error_msg_short), "%s(%s,%x)", allocators[allocator_index].name, format_memory_size_and_flags(size, flags));
+        snprintf(last_error_msg, sizeof(last_error_msg), "%s(%s) failed at %s:%d, %s.", allocators[allocator_index].name, format_memory_size_and_flags(size, flags), file, line, get_current_task_name());
+        dbg_printf("alloc fail, took %s%d.%03d s\n", FMT_FIXEDPOINT3(t1-t0));
+    }
+    else
+    {
+        /* force the cacheable pointer to be the way user requested it */
+        /* note: internally, this library must use the vanilla pointer (non-mangled) */
+        ptr = (flags & MEM_DMA) ? UNCACHEABLE(ptr) : CACHEABLE(ptr);
+
+        dbg_printf("alloc ok, took %s%d.%03d s\n", FMT_FIXEDPOINT3(t1-t0));
+    }
+
+    return ptr;
+}
+
+/* used for property handler / vsync hooks / GUI handlers / other tricky places */
+/* not to be called directly, but exported to modules for test purposes (seltest.mo) */
+void * __fast_malloc(size_t size, unsigned int flags, const char* file, unsigned int line)
+{
+    /* for small sizes only */
+    ASSERT(size < 65536);
+
+    /* Canon code uses AllocateMemory for these, so... let's try */
+    int allocator_index = 1;
+
+    /* is this thread-safe? */
+    void * ptr = memcheck_malloc(size, file, line, allocator_index, flags);
+
+    return check_and_adjust_ptr(ptr, size, flags, file, line, allocator_index);
+}
+
 /* these two will replace all malloc calls */
 
 /* returns 0 if it couldn't allocate */
@@ -795,8 +834,18 @@ void* __mem_malloc(size_t size, unsigned int flags, const char* file, unsigned i
 {
     /* running from PROP_HANDLER's will cause trouble
      * slow allocators (in particular, srm_malloc) will keep the semaphore busy
-     * this would delay Canon's property handlers, possibly overflowing the queue */
-    if (streq(get_current_task_name(), "PropMgr")) ASSERT(0);
+     * this would delay Canon's property handlers, possibly overflowing the queue
+     * similar issues may appear with GUI handlers, LiveView "vsync" hooks etc
+     * todo: generic way to figure out whether we are running from such hooks or from regular tasks
+     */
+    const char * current_task_name = get_current_task_name();
+    if (streq(current_task_name, "PropMgr") ||
+        streq(current_task_name, "GuiMainTask") ||
+        streq(current_task_name, "Evf"))
+    {
+        dbg_printf("fast_malloc(%s) from %s:%d task %s\n", format_memory_size_and_flags(size, flags), file, line, get_current_task_name());
+        return __fast_malloc(size, flags, file, line);
+    }
 
     ASSERT(mem_sem);
     take_semaphore(mem_sem, 0);
@@ -836,21 +885,7 @@ void* __mem_malloc(size_t size, unsigned int flags, const char* file, unsigned i
         int t1 = get_ms_clock();
         #endif
         
-        if (!ptr)
-        {
-            /* didn't work? */
-            snprintf(last_error_msg_short, sizeof(last_error_msg_short), "%s(%s,%x)", allocators[allocator_index].name, format_memory_size_and_flags(size, flags));
-            snprintf(last_error_msg, sizeof(last_error_msg), "%s(%s) failed at %s:%d, %s.", allocators[allocator_index].name, format_memory_size_and_flags(size, flags), file, line, get_current_task_name());
-            dbg_printf("alloc fail, took %s%d.%03d s\n", FMT_FIXEDPOINT3(t1-t0));
-        }
-        else
-        {
-            /* force the cacheable pointer to be the way user requested it */
-            /* note: internally, this library must use the vanilla pointer (non-mangled) */
-            ptr = (flags & MEM_DMA) ? UNCACHEABLE(ptr) : CACHEABLE(ptr);
-
-            dbg_printf("alloc ok, took %s%d.%03d s => %x (size %x)\n", FMT_FIXEDPOINT3(t1-t0), ptr, size);
-        }
+        ptr = check_and_adjust_ptr(ptr, size, flags, file, line, allocator_index);
         
         give_semaphore(mem_sem);
         return ptr;
@@ -867,9 +902,6 @@ void* __mem_malloc(size_t size, unsigned int flags, const char* file, unsigned i
 void __mem_free(void* buf)
 {
     if (!buf) return;
-
-    /* see __mem_malloc */
-    if (streq(get_current_task_name(), "PropMgr")) ASSERT(0);
 
     take_semaphore(mem_sem, 0);
 
