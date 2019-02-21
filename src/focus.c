@@ -272,30 +272,24 @@ display_lens_hyperfocal()
         return;
     }
 
-    // TODO: Check if can be replaced with %.42s after merging vsnprintf from dietlibc
-    if(strlen(lens_info.name) > 42)
-    {
-      char lensName[42];
-      snprintf(lensName, 42, "%s", lens_info.name);
+    /*
+     Long lens name will fill the space needed for printing focal length and aperture values
+    */
+    char lensName[45]; /* 41 char from Lens name plus punctuation and termination character */
+    int len = strlen(lens_info.name);
 
-      bmp_printf( font, x, y,
-          "Lens: %s..., %dmm f/%d.%d",
-          lensName,
-          lens_info.focal_len,
-          lens_info.aperture / 10,
-          lens_info.aperture % 10
-      );
-    }
-    else
-    {
-      bmp_printf( font, x, y,
-          "Lens: %s, %dmm f/%d.%d",
-          lens_info.name,
-          lens_info.focal_len,
-          lens_info.aperture / 10,
-          lens_info.aperture % 10
-      );
-    }
+    snprintf(lensName,
+      len > 42 ? 43 : sizeof(lens_info.name),
+      "%s",
+      lens_info.name
+    );
+    bmp_printf( font, x, y,
+        len > 42 ? "Lens: %s..., %dmm f/%d.%d" : "Lens: %s, %dmm f/%d.%d",
+        lensName,
+        lens_info.focal_len,
+        lens_info.aperture / 10,
+        lens_info.aperture % 10
+    );
 
     if (!lens_info.focus_dist)
     {
