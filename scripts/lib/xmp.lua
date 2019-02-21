@@ -35,7 +35,7 @@ xmp.focal_length = { name = "exif:FocalLength", format = "%d/1"}
 xmp.aperture = { name = "exif:FNumber", format = "%d/10" }
 
 function xmp.get_sidecar_filename()
-    return dryos.dcim_dir.path ..  dryos.image_prefix .. string.format("%04d", dryos.shooting_card.file_number) .. ".XMP"
+    return dryos.shooting_card.dcim_dir.path ..  dryos.image_prefix .. string.format("%04d", dryos.shooting_card.file_number) .. ".XMP"
 end
 
 --[[---------------------------------------------------------------------------
