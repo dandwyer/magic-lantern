@@ -33,6 +33,8 @@ xmp.lens_name = { name = "aux:Lens" }
 xmp.lens_serial = { name = "aux:SerialNumber" }
 xmp.focal_length = { name = "exif:FocalLength", format = "%d/1"}
 xmp.aperture = { name = "exif:FNumber", format = "%d/10" }
+xmp.aperture_min = { name = "exif:MinApertureValue", format = "%d/10" }
+xmp.aperture_max = { name = "exif:MaxApertureValue", format = "%d/10" }
 
 function xmp.get_sidecar_filename()
     return dryos.shooting_card.dcim_dir.path ..  dryos.image_prefix .. string.format("%04d", dryos.shooting_card.file_number) .. ".XMP"

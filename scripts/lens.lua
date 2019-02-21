@@ -129,6 +129,8 @@ lensSelected = false
 xmp:add_property(xmp.lens_name, function() return lens.name end)
 xmp:add_property(xmp.focal_length, function() return lens.focal_length end)
 xmp:add_property(xmp.aperture, function() return (lens.manual_aperture * 10) end)
+xmp:add_property(xmp.aperture_min, function() return (lens.aperture_min * 10) end)
+xmp:add_property(xmp.aperture_max, function() return (lens.aperture_max * 10) end)
 xmp:add_property(xmp.lens_serial, function() return lens.serial end)
 
 -- Helper function
@@ -152,7 +154,20 @@ function reset_lens_values()
   lens.serial = 0
 end
 
--- Function used to restore lens value of selected lens after changing shooting mode
+-- Function used to update aperture range for saving in metadata file
+function update_aperture_range()
+  local index = selector_instance.index
+  local f_values = lenses[index].f_values
+  if f_values ~= nil then
+    lens.aperture_max = f_values[1]
+    lens.aperture_min = f_values[#f_values]
+  else
+    lens.aperture_max = lens.manual_aperture
+    lens.aperture_min = lens.manual_aperture
+  end
+end
+
+-- Function used to restore lens value of selected lens after changing shooting mode or at startup when autoloading is enabled
 -- Get called in property.LENS_NAME:handler() after checking attached lens is manual
 function restore_lens_values()
   local index = lens_config.Lens
@@ -161,6 +176,7 @@ function restore_lens_values()
     for k,v in pairs(lenses[selector_instance.index]) do
         lens[k] = v
     end
+    update_aperture_range()
     -- Restore last Aperture and Focal Length used from lens.cfg
     lens.focal_length = lens_config["Focal Length"]
     lens.manual_aperture = lens_config["Aperture"]
@@ -237,6 +253,8 @@ function update_lens()
     for k,v in pairs(lenses[selector_instance.index]) do
         lens[k] = v
     end
+    -- Update aperture range for saving in metadata file
+    update_aperture_range()
     -- Allow to write sidecar
     xmp:start()
     -- Update flag
