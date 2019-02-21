@@ -25,67 +25,67 @@ lenses =
 
 --  Zeiss ZF.2 manual lenses Nikon mount - these work with the lens profiles that ship with Adobe Camera Raw
 
---  { name = "Zeiss Distagon T* 2.8/15 ZF.2",        focal_length =  15, manual_aperture = 2.8 },
---  { name = "Zeiss Distagon T* 3.5/18 ZF.2",        focal_length =  18, manual_aperture = 3.5 },
---  { name = "Zeiss Distagon T* 2.8/21 ZF.2",        focal_length =  21, manual_aperture = 2.8 },
---  { name = "Zeiss Distagon T* 2.8/25 ZF.2",        focal_length =  25, manual_aperture = 2.8 },
---  { name = "Zeiss Distagon T* 2/25 ZF.2",          focal_length =  25, manual_aperture = 2   },
---  { name = "Zeiss Distagon T* 2/28 ZF.2",          focal_length =  28, manual_aperture = 2   },
---  { name = "Zeiss Distagon T* 2/35 ZF.2",          focal_length =  35, manual_aperture = 2   },
---  { name = "Zeiss Distagon T* 1.4/35 ZF.2",        focal_length =  35, manual_aperture = 1.4 },
---  { name = "Zeiss Makro-Planar T* 2/50 ZF.2",      focal_length =  50, manual_aperture = 2   },
---  { name = "Zeiss Planar T* 1.4/50 ZF.2",          focal_length =  50, manual_aperture = 1.4 },
---  { name = "Zeiss Planar T* 1.4/85 ZF.2",          focal_length =  85, manual_aperture = 1.4 },
---  { name = "Zeiss Makro-Planar T* 2/100 ZF.2",     focal_length = 100, manual_aperture = 2   },
---  { name = "Zeiss Apo Sonnar T* 2/135 ZF.2",       focal_length = 135, manual_aperture = 2   },
+--  { name = "Zeiss Distagon T* 2.8/15 ZF.2",        focal_length =  15, manual_aperture = 2.8, f_values = {"2.8","4","5.6,"8","11","16","22"}           },
+--  { name = "Zeiss Distagon T* 3.5/18 ZF.2",        focal_length =  18, manual_aperture = 3.5, f_values = {"3.5","5.6,"8","11","16","22"}               },
+--  { name = "Zeiss Distagon T* 2.8/21 ZF.2",        focal_length =  21, manual_aperture = 2.8, f_values = {"2.8","4","5.6,"8","11","16","22"}           },
+--  { name = "Zeiss Distagon T* 2.8/25 ZF.2",        focal_length =  25, manual_aperture = 2.8, f_values = {"2.8","4","5.6,"8","11","16","22"}           },
+--  { name = "Zeiss Distagon T* 2/25 ZF.2",          focal_length =  25, manual_aperture = 2  , f_values = {"2","2.8","4","5.6,"8","11","16","22"}       },
+--  { name = "Zeiss Distagon T* 2/28 ZF.2",          focal_length =  28, manual_aperture = 2  , f_values = {"2","2.8","4","5.6,"8","11","16","22"}       },
+--  { name = "Zeiss Distagon T* 2/35 ZF.2",          focal_length =  35, manual_aperture = 2  , f_values = {"2","2.8","4","5.6,"8","11","16","22"}       },
+--  { name = "Zeiss Distagon T* 1.4/35 ZF.2",        focal_length =  35, manual_aperture = 1.4, f_values = {"1.4","2","2.8","4","5.6,"8","11","16","22"} },
+--  { name = "Zeiss Makro-Planar T* 2/50 ZF.2",      focal_length =  50, manual_aperture = 2  , f_values = {"2","2.8","4","5.6,"8","11","16","22"}       },
+--  { name = "Zeiss Planar T* 1.4/50 ZF.2",          focal_length =  50, manual_aperture = 1.4, f_values = {"1.4","2","2.8","4","5.6,"8","11","16","22"} },
+--  { name = "Zeiss Planar T* 1.4/85 ZF.2",          focal_length =  85, manual_aperture = 1.4, f_values = {"1.4","2","2.8","4","5.6,"8","11","16","22"} },
+--  { name = "Zeiss Makro-Planar T* 2/100 ZF.2",     focal_length = 100, manual_aperture = 2  , f_values = {"2","2.8","4","5.6,"8","11","16","22"}       },
+--  { name = "Zeiss Apo Sonnar T* 2/135 ZF.2",       focal_length = 135, manual_aperture = 2  , f_values = {"2","2.8","4","5.6,"8","11","16","22"}       },
 
 --  Nikon AF lenses (Autofocus and Vibration Reduction won't work and exact aperture can't be set on G mount lenses)
 
---  { name = "Nikon AF Fisheye-NIKKOR 16mm f/2.8D",  focal_length =  16, manual_aperture = 2.8 },
---  { name = "Nikon AF NIKKOR 20mm f/2.8D",          focal_length =  20, manual_aperture = 2.8 },
---  { name = "Nikon AF NIKKOR 28mm f/1.4D",          focal_length =  28, manual_aperture = 1.4 },
---  { name = "Nikon AF NIKKOR 35mm f/2D",            focal_length =  35, manual_aperture = 2   },
---  { name = "Nikon AF NIKKOR 50mm f/1.4D",          focal_length =  50, manual_aperture = 1.4 },
---  { name = "Nikon AFS-NIKKOR 50mm f/1.8G",         focal_length =  50, manual_aperture = 1.8 },
---  { name = "Nikon AF Micro-NIKKOR 60mm f/2.8D",    focal_length =  60, manual_aperture = 2.8 },
---  { name = "Nikon AF NIKKOR 85mm f/1.4D IF",       focal_length =  85, manual_aperture = 1.4 },
---  { name = "Nikon AF DC-NIKKOR 105mm f/2D",        focal_length = 105, manual_aperture = 2   },
---  { name = "Nikon AF DC-NIKKOR 135mm f/2D",        focal_length = 135, manual_aperture = 2   },
---  { name = "Nikon AF NIKKOR 28-105 f3.5-4.5D",     focal_length =  28, manual_aperture = 3.5 },
+--  { name = "Nikon AF Fisheye-NIKKOR 16mm f/2.8D",  focal_length =  16, manual_aperture = 2.8, f_values = {"2.8","4","5.6,"8","11","16","22"}      },
+--  { name = "Nikon AF NIKKOR 20mm f/2.8D",          focal_length =  20, manual_aperture = 2.8, f_values = {"2.8","4","5.6,"8","11","16","22"}      },
+--  { name = "Nikon AF NIKKOR 28mm f/1.4D",          focal_length =  28, manual_aperture = 1.4, f_values = {"1.4","2","2.8","4","5.6,"8","11","16"} },
+--  { name = "Nikon AF NIKKOR 35mm f/2D",            focal_length =  35, manual_aperture = 2  , f_values = {"2","2.8","4","5.6,"8","11","16","22"}  },
+--  { name = "Nikon AF NIKKOR 50mm f/1.4D",          focal_length =  50, manual_aperture = 1.4, f_values = {"1.4","2","2.8","4","5.6,"8","11","16"} },
+--  { name = "Nikon AFS-NIKKOR 50mm f/1.8G",         focal_length =  50, manual_aperture = 1.8                                                      },
+--  { name = "Nikon AF Micro-NIKKOR 60mm f/2.8D",    focal_length =  60, manual_aperture = 2.8, f_values = {"2.8","4","5.6,"8","11","16","22","32"} },
+--  { name = "Nikon AF NIKKOR 85mm f/1.4D IF",       focal_length =  85, manual_aperture = 1.4, f_values = {"1.4","2","2.8","4","5.6,"8","11","16"} },
+--  { name = "Nikon AF DC-NIKKOR 105mm f/2D",        focal_length = 105, manual_aperture = 2  , f_values = {"2","2.8","4","5.6,"8","11","16"}       },
+--  { name = "Nikon AF DC-NIKKOR 135mm f/2D",        focal_length = 135, manual_aperture = 2  , f_values = {"2","2.8","4","5.6,"8","11","16"}       },
+--  { name = "Nikon AF NIKKOR 28-105 f3.5-4.5D",     focal_length =  28, manual_aperture = 3.5, f_values = {"3.5","5.6","8","11","16","22"},        focal_min = 28, focal_max = 105 },
 
 --  Nikon Manual focus lenses
 
---  { name = "Nikon Zoom Ais ED 50-300",             focal_length = 300, manual_aperture = 4.5 },
---  { name = "Nikon Ais NIKKOR 24mm f/2.8",          focal_length =  24, manual_aperture = 2.8 },
---  { name = "Nikon Ais NIKKOR 35mm f/1.4",          focal_length =  35, manual_aperture = 1.4 },
---  { name = "Nikon Ais NIKKOR 55mm f/1.2",          focal_length =  55, manual_aperture = 1.2 },
---  { name = "Nikon Ais MICRO NIKKOR 55mm f/2.8",    focal_length =  55, manual_aperture = 2.8 },
---  { name = "Nikon Ais NIKKOR 105mm f/1.8",         focal_length = 105, manual_aperture = 1.8 },
---  { name = "Nikon Ais NIKKOR 500mm f/8",           focal_length = 500, manual_aperture = 8   },
+--  { name = "Nikon Zoom Ais ED 50-300",             focal_length = 300, manual_aperture = 4.5, f_values = {"4.5","5.6","8","11","16","22","32"},    focal_min = 50, focal_max = 300 },
+--  { name = "Nikon Ais NIKKOR 24mm f/2.8",          focal_length =  24, manual_aperture = 2.8, f_values = {"2.8","4","5.6,"8","11","16","22"}       },
+--  { name = "Nikon Ais NIKKOR 35mm f/1.4",          focal_length =  35, manual_aperture = 1.4, f_values = {"1.4","2","2.8","4","5.6,"8","11","16"}  },
+--  { name = "Nikon Ais NIKKOR 55mm f/1.2",          focal_length =  55, manual_aperture = 1.2, f_values = {"1.2","2","2.8","4","5.6,"8","11","16"}  },
+--  { name = "Nikon Ais MICRO NIKKOR 55mm f/2.8",    focal_length =  55, manual_aperture = 2.8, f_values = {"2.8","4","5.6,"8","11","16","22","32"}  },
+--  { name = "Nikon Ais NIKKOR 105mm f/1.8",         focal_length = 105, manual_aperture = 1.8, f_values = {"1.8","2.8","4","5.6,"8","11","16","22"} },
+--  { name = "Nikon Ais NIKKOR 500mm f/8",           focal_length = 500, manual_aperture = 8  , f_values = {"8"}                                     },
 
 --  Samyang manual lenses - also branded as Rokinon and Bower. Cine versions use the same lens profile.
 --  The lens profiles for Samyang manual lenses that ship with Adobe Camera raw must be modified in order
 --  for automatic lens detection to work.
 --  More information here: http://www.magiclantern.fm/forum/index.php?topic=18083.msg176261#msg176261
 
---  { name = "Samyang 8mm f/2.8 UMC Fisheye",        focal_length =   8, manual_aperture = 2.8 },
---  { name = "Samyang 8mm f/2.8 UMC Fisheye II",     focal_length =   8, manual_aperture = 2.8 }, --   8mm T3.1 Cine
---  { name = "Samyang 8mm f/3.5 UMC Fish-Eye CS",    focal_length =   8, manual_aperture = 3.5 },
---  { name = "Samyang 8mm f/3.5 UMC Fish-Eye CS II", focal_length =   8, manual_aperture = 3.5 }, --   8mm T3.8 Cine
---  { name = "Samyang 10mm f/2.8 ED AS NCS CS",      focal_length =  10, manual_aperture = 2.8 }, --  10mm T3.1 Cine
---  { name = "Samyang 12mm f/2 NCS CS",              focal_length =  12, manual_aperture = 2   }, --  12mm T2.2 Cine
---  { name = "Samyang 12mm f/2.8 ED AS NCS Fisheye", focal_length =  12, manual_aperture = 2.8 }, --  12mm T3.1 Cine
---  { name = "Samyang 14mm f/2.8 ED AS IF UMC",      focal_length =  14, manual_aperture = 2.8 }, --  14mm T3.1 Cine
---  { name = "Samyang 16mm f/2 ED AS UMC CS",        focal_length =  16, manual_aperture = 2   }, --  16mm T2.2 Cine
---  { name = "Samyang 21mm f/1.4 ED AS UMC CS",      focal_length =  21, manual_aperture = 1.4 }, --  21mm T1.5 Cine
---  { name = "Samyang 24mm f/1.4 ED AS IF UMC",      focal_length =  24, manual_aperture = 1.4 }, --  24mm T1.5 Cine
---  { name = "Samyang 35mm f/1.4 AS IF UMC",         focal_length =  35, manual_aperture = 1.4 }, --  35mm T1.5 Cine
---  { name = "Samyang 50mm f/1.2 AS UMC CS",         focal_length =  50, manual_aperture = 1.2 },
---  { name = "Samyang 50mm f/1.4 AS UMC",            focal_length =  50, manual_aperture = 1.4 }, --  50mm T1.5 Cine
---  { name = "Samyang 85mm f/1.4 AS IF UMC",         focal_length =  85, manual_aperture = 1.4 }, --  85mm T1.5 Cine
---  { name = "Samyang 100mm f/2.8 ED UMC MACRO",     focal_length = 100, manual_aperture = 2.8 }, -- 100mm T3.1 Cine
---  { name = "Samyang 135mm f/2 ED UMC",             focal_length = 135, manual_aperture = 2   }, -- 135mm T2.2 Cine
---  { name = "Samyang 300mm f/6.3 ED UMC CS",        focal_length = 300, manual_aperture = 6.3 },
+--  { name = "Samyang 8mm f/2.8 UMC Fisheye",        focal_length =   8, manual_aperture = 2.8, f_values = {"2.8","4","5.6,"8","11","16","22"}            },
+--  { name = "Samyang 8mm f/2.8 UMC Fisheye II",     focal_length =   8, manual_aperture = 2.8, f_values = {"2.8","4","5.6,"8","11","16","22"}            }, --   8mm T3.1 Cine
+--  { name = "Samyang 8mm f/3.5 UMC Fish-Eye CS",    focal_length =   8, manual_aperture = 3.5, f_values = {3.5","5.6,"8","11","16","22"}                 },
+--  { name = "Samyang 8mm f/3.5 UMC Fish-Eye CS II", focal_length =   8, manual_aperture = 3.5, f_values = {3.5","5.6,"8","11","16","22"}                 }, --   8mm T3.8 Cine
+--  { name = "Samyang 10mm f/2.8 ED AS NCS CS",      focal_length =  10, manual_aperture = 2.8, f_values = {"2.8","4","5.6,"8","11","16","22"}            }, --  10mm T3.1 Cine
+--  { name = "Samyang 12mm f/2 NCS CS",              focal_length =  12, manual_aperture = 2  , f_values = {"2","2.8","4","5.6,"8","11","16","22"}        }, --  12mm T2.2 Cine
+--  { name = "Samyang 12mm f/2.8 ED AS NCS Fisheye", focal_length =  12, manual_aperture = 2.8, f_values = {"2.8","4","5.6,"8","11","16","22"}            }, --  12mm T3.1 Cine
+--  { name = "Samyang 14mm f/2.8 ED AS IF UMC",      focal_length =  14, manual_aperture = 2.8, f_values = {"2.8","4","5.6,"8","11","16","22"}            }, --  14mm T3.1 Cine
+--  { name = "Samyang 16mm f/2 ED AS UMC CS",        focal_length =  16, manual_aperture = 2  , f_values = {"2","2.8","4","5.6,"8","11","16","22"}        }, --  16mm T2.2 Cine
+--  { name = "Samyang 21mm f/1.4 ED AS UMC CS",      focal_length =  21, manual_aperture = 1.4, f_values = {"1.4","2","2.8","4","5.6,"8","11","16","22"}  }, --  21mm T1.5 Cine
+--  { name = "Samyang 24mm f/1.4 ED AS IF UMC",      focal_length =  24, manual_aperture = 1.4, f_values = {"1.4","2","2.8","4","5.6,"8","11","16","22"}  }, --  24mm T1.5 Cine
+--  { name = "Samyang 35mm f/1.4 AS IF UMC",         focal_length =  35, manual_aperture = 1.4, f_values = {"1.4","2","2.8","4","5.6,"8","11","16","22"}  }, --  35mm T1.5 Cine
+--  { name = "Samyang 50mm f/1.2 AS UMC CS",         focal_length =  50, manual_aperture = 1.2, f_values = {"1.2","1.4","2","2.8","4","5.6,"8","11","16"} },
+--  { name = "Samyang 50mm f/1.4 AS UMC",            focal_length =  50, manual_aperture = 1.4, f_values = {"1.4","2","2.8","4","5.6,"8","11","16","22"}  }, --  50mm T1.5 Cine
+--  { name = "Samyang 85mm f/1.4 AS IF UMC",         focal_length =  85, manual_aperture = 1.4, f_values = {"1.4","2","2.8","4","5.6,"8","11","16","22"}  }, --  85mm T1.5 Cine
+--  { name = "Samyang 100mm f/2.8 ED UMC MACRO",     focal_length = 100, manual_aperture = 2.8, f_values = {"2.8","4","5.6,"8","11","16","22","32"}       }, -- 100mm T3.1 Cine
+--  { name = "Samyang 135mm f/2 ED UMC",             focal_length = 135, manual_aperture = 2  , f_values = {"2","2.8","4","5.6,"8","11","16","22"}        }, -- 135mm T2.2 Cine
+--  { name = "Samyang 300mm f/6.3 ED UMC CS",        focal_length = 300, manual_aperture = 6.3, f_values = {"6.3"}                                        },
 
 
 --  Lensbaby lenses
