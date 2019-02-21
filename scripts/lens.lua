@@ -339,7 +339,7 @@ autoload_menu = menu.new
     parent = "Lens Info Prefs",
     name = "Autoload Lens",
     help = "Restore lens config from .cfg after camera Power On/Wake Up",
-    choices = {"Off","On"}
+    choices = {"OFF","ON"}
 }
 
 -- Helper function for update_menu()
@@ -399,7 +399,7 @@ autoload_config = config.create_from_menu(autoload_menu)
 -- Check precence of manual lens on start and autoload values if the user enabled autoload
 if is_manual_lens() then
   local id = tonumber(lens_config.Lens)
-  autoload = autoload_menu.value == "On"
+  autoload = autoload_menu.value == "ON"
 
   if autoload and id ~= 0 then
     selector_instance.index = id
