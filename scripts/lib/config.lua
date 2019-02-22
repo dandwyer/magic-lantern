@@ -8,6 +8,7 @@ with `require('config')`
 ]]
 config = {}
 config.configs = {}
+config.menus = {}
 config.__index = config
 
 function config.findConfig(fileName)
@@ -21,16 +22,19 @@ function config.findConfig(fileName)
   return nil
 end
 
+-- Function used to add the menu to config.configs[script_name]
+-- Fill the config by replicating Menu's structure
 local function insertMenu(cfg,m)
-  local tmp = {}
-  -- build new table
-  tmp.menu = m
+  local tmp
 
   if m.submenu == nil then
-    -- Single menu entry. Save as a table with a single entry
-    tmp[m.name] = m.value
+    -- Single menu entry. Save directly as a key value pair
+    tmp = m.value
   else
+    -- Menu with more than an entry. Save as a table
+    tmp = {}
     for k,v in pairs(m.submenu) do
+      -- build the new table
       if v.submenu ~= nil then
         -- Recurse into submenu
         tmp[k] = {}
@@ -156,6 +160,8 @@ automagically
 @function create_from_menu
 ]]
 function config.create_from_menu(m)
+    assert(m ~= nil, "Can't create Config from Menu. Nil argument")
+
     local default = {}
     --default values are simply the menu's default values
     insertMenu(default,m)
@@ -168,9 +174,11 @@ function config.create_from_menu(m)
       insertMenu(cfg.data,m)
     else
       -- Already present in config.configs, load values to menu from config
-      cfg.data[m.name].menu = m
+      -- This appen when data is loaded from config after first call to create_internal
       recursiveLoad(m,cfg.data[m.name])
     end
+    -- Save menu pointer to data structure. Used when saving config back to file
+    config.menus[m.name] = m
 
     --    cfg.default = default -- TODO: Replicate .data's structure
 
@@ -199,14 +207,27 @@ update your config.data when the config is being saved
 function config:saving()
   -- Copy values of each menu
   for k,v in pairs(self.data) do
-    -- k -> A table representing a menu entry or a single entry of a simple config
+    -- v/self.data[k] -> A table representing a menu entry or a single entry of a simple config
+    local menu = config.menus[k]
     if type(self.data[k]) == "table" then
-      local menu = self.data[k].menu
-      -- Copy menu and save values into .cfg
-      recursiveCopy(v,menu,self.data[k],nil)
+      -- It's a menu with more than one entry or a complex config field (table)
+      if menu ~= nil then
+        -- Copy menu and save values into .cfg
+        recursiveCopy(v,menu,self.data[k],nil)
+      else
+        -- Just a Placeholder: A config entry expressed as table. No need to do anything
+        print("Saving - Table case - Config Table")
+      end
+    else
+      -- It's a menu with single entry or a simple config field
+      -- Handle only menu case
+      if menu ~= nil then
+        self.data[k] = menu.value
+      else
+        -- Just a Placeholder: A config entry expressed as simple value (not a talbe). No need to do anything
+      end
     end
   end
-
 end
 
 --[[---------------------------------------------------------------------------
