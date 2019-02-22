@@ -49,37 +49,28 @@ local function insertMenu(cfg,m)
   cfg[m.name] = tmp
 end
 
--- TODO: Refactor function body
-local function recursiveCopy(o,m,cfg,s)
-  local tmp = {}
-  -- Copy value
-  if type(o) == "number" or type(o) == "string" then
-    if m ~= nil then
-      if cfg[s] ~= nil then
-        cfg[s][m.name] = m.value
-      else
-        cfg[m.name] = m.value
+-- Function used to update config in memory with the current menus values
+-- Due to the need of passing parameters as arguments, the function is augmented with prev(reference to table) and key(entry name)
+local function recursiveCopy(obj,menu,prev,key)
+  if obj == nil or menu == nil then return end
+
+  if type(obj) == "number" or type(obj) == "string" or type(obj) == "boolean" then
+    prev[key] = menu.value
+  elseif type(obj) == "table" then
+    -- Recursive Step for each entry of the table
+    for k,v in pairs(obj) do
+      if menu.submenu == nil then
+        -- Should not be reachable. Keep print just in case of conflicts with any future changes
+        print("ERROR: menu.submenu is nil")
+        return
       end
-    else
-      cfg = o
-    end
-  -- Recurse over table
-  elseif type(o) == "table" then
-    if m == nil then print("MENU NIL\n")
-    else
-      for s,c in pairs(o) do
-        local tmp = {}
-        if m.submenu ~= nil then
-          recursiveCopy(c,m.submenu[s],cfg,m.name)
-        else
-          -- Single menu entry
-          recursiveCopy(m.value,m,cfg,nil)
-        end
-      end
+      -- use obj/k to pass the table by reference
+      local m = menu.submenu[k]
+      recursiveCopy(v,m,obj,k)
     end
   else
-    -- userdata
-    cfg = o
+    -- Userdata and others
+    prev[key] = menu.value
   end
 
 end
@@ -213,7 +204,7 @@ function config:saving()
       -- It's a menu with more than one entry or a complex config field (table)
       if menu ~= nil then
         -- Copy menu and save values into .cfg
-        recursiveCopy(v,menu,self.data[k],nil)
+        recursiveCopy(v,menu,nil,nil)
       else
         -- Just a Placeholder: A config entry expressed as table. No need to do anything
         print("Saving - Table case - Config Table")
