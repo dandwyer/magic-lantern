@@ -154,8 +154,8 @@ function reset_lens_values()
   lens.serial = 0
 end
 
--- Function used to update aperture range for saving in metadata file
-function update_aperture_range()
+-- Function used to update aperture/focal_length range for saving in metadata file
+function update_aperture_focal_range()
   local index = selector_instance.index
   local f_values = lenses[index].f_values
   if f_values ~= nil then
@@ -164,6 +164,16 @@ function update_aperture_range()
   else
     lens.aperture_max = lens.manual_aperture
     lens.aperture_min = lens.manual_aperture
+  end
+  -- Also update Focal Min/Max to avoid "0" as value if isn't specified in current lens attributes
+  local focal_min = lenses[index].focal_min
+  local focal_max = lenses[index].focal_max
+  if focal_min ~= nil and focal_max ~= nil then
+    lens.focal_min = focal_min
+    lens.focal_max = focal_max
+  else
+    lens.focal_min = lens.focal_length
+    lens.focal_max = lens.focal_length
   end
 end
 
@@ -176,7 +186,7 @@ function restore_lens_values()
     for k,v in pairs(lenses[selector_instance.index]) do
         lens[k] = v
     end
-    update_aperture_range()
+    update_aperture_focal_range()
     -- Restore last Aperture and Focal Length used from lens.cfg
     lens.focal_length = lens_config["Focal Length"]
     lens.manual_aperture = lens_config["Aperture"]
@@ -254,7 +264,7 @@ function update_lens()
         lens[k] = v
     end
     -- Update aperture range for saving in metadata file
-    update_aperture_range()
+    update_aperture_focal_range()
     -- Allow to write sidecar
     xmp:start()
     -- Update flag
