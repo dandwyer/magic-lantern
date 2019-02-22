@@ -17,9 +17,9 @@ lenses =
 --  focal_min       -> min Focal Length (optional for prime lenses)
 --  focal_max       -> max Focal Length (optional for prime lenses)
 --  serial          -> Lens Serial Number (optional)
---  f_values        -> Available f-stop for selected lens (optional)
+--  f_values        -> Available f-stop for selected lens. Script update menu values and metadata according to this (optional but recommended)
 
-    { name = "My Lens", focal_length = 50 },
+    { name = "My Lens", focal_length = 50, manual_aperture = 1.8 },
     { name = "My Other Lens", focal_length = 25, manual_aperture = 2.8, f_values = {"2.8","4","5.6","8"} },
     { name = "My Zoom Lens", focal_length = 105, manual_aperture = 4, focal_min = 70, focal_max = 200, serial = 123456789 },
 
@@ -179,6 +179,7 @@ end
 
 -- Function used to restore lens value of selected lens after changing shooting mode or at startup when autoloading is enabled
 -- Get called in property.LENS_NAME:handler() after checking attached lens is manual
+-- Also called when autoloading lenses on camera start to get correct metadata
 function restore_lens_values()
   local index = lens_config.Lens
   if (index ~= nil and index ~= 0 and lens_config ~= nil) then
