@@ -234,7 +234,7 @@ function config:save()
     assert(f ~= nil, "Could not save config: "..self.filename)
     -- Serialize data into a loadable format
     f:write("return ")
-    config.serialize(f,self.data,1)
+    config.serialize(f,self.data,0)
     f:close()
 end
 
@@ -249,8 +249,7 @@ function config.serialize(f,o,lvl)
         for k,v in pairs(o) do
           if k ~= "menu" then
             -- Indent starting line
-            f:write(string.rep("\t", lvl))
-            f:write("[")
+            f:write(string.rep("\t", lvl+1).."[")
             config.serialize(f,k,lvl+1)
             f:write("] = ")
             config.serialize(f,v,lvl+1)
@@ -258,7 +257,7 @@ function config.serialize(f,o,lvl)
           end
         end
         -- Indent closing bracket
-        f:write(string.rep("\t", lvl-1))
+        f:write(string.rep("\t", lvl))
         f:write("}")
     else
         --something we don't know how to serialize, just skip it
