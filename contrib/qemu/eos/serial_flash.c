@@ -57,7 +57,7 @@ SerialFlashState * serial_flash_init(const char * filename, size_t size)
     // Initialize data
     FILE * f = (filename != NULL) ? fopen(filename, "rb") : NULL;
     if (f != NULL) {
-        fprintf(stderr, "[EOS] loading '%s' as serial flash, size=0x%lX\n", filename, size);
+        fprintf(stderr, "[EOS] loading '%s' as serial flash, size=0x%X\n", filename, (int) size);
         size_t read_size = fread(sf->data, sizeof(uint8_t), size, f);
         if (read_size != size) {
             fprintf(stderr, "Could not read %zd (0x%zX) bytes from %s (was %zd)\n", size, size, filename, read_size);
@@ -128,7 +128,6 @@ uint8_t serial_flash_spi_read(SerialFlashState * sf)
             break;
 
         case 0x9f: // Read id
-            sf->read_value = sf->RDID_seq[sf->substate+1];
             sf->rw_count++;
             sf->substate++;
             if (sf->substate == 3)
@@ -136,6 +135,7 @@ uint8_t serial_flash_spi_read(SerialFlashState * sf)
                 sf->state = 0;
                 sf->substate = 0;
             }
+            sf->read_value = sf->RDID_seq[sf->substate];
             EE_DPRINTF("Verbose: READ in RDID = %02Xh\n", ret);
             break;
 
