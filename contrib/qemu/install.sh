@@ -241,7 +241,7 @@ if [ $(uname) == "Darwin" ]; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
 
-    packages="python2 python3 wget mercurial xz grep pkg-config glib automake libtool pixman mtools"
+    packages="python3 wget mercurial xz grep pkg-config glib automake libtool pixman mtools"
     for pkg in $packages; do
         brew list $pkg &> /dev/null || brew install $pkg
     done
@@ -258,7 +258,7 @@ if [  -n "$(lsb_release -i 2>/dev/null | grep Ubuntu)" ]; then
         build-essential mercurial pkg-config libtool
         git libglib2.0-dev libpixman-1-dev zlib1g-dev
         libgtk2.0-dev xz-utils mtools netcat-openbsd
-        python python3 python3-pip python3-docutils"
+        python3 python3-pip python3-docutils"
 
     # if a valid arm-none-eabi-gcc/gdb is already in PATH, try to use that
     # otherwise, we'll try to install something
