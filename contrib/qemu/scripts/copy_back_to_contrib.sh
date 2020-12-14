@@ -14,7 +14,7 @@ cp -v --parents tests/*.sh tests/*.py $ML_PATH/contrib/qemu/
 cp -v --parents tests/*/*.md5 $ML_PATH/contrib/qemu/
 
 cd $QEMU_PATH
-git diff > ../$ML_PATH/contrib/qemu/$QEMU_PATH.patch
+git diff > ../$ML_PATH/contrib/qemu/$QEMU_PATH-eos.patch
 cd ..
 
 cd $ML_PATH/contrib/qemu/

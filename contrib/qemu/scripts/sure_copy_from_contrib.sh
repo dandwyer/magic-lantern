@@ -20,8 +20,8 @@ if [ "$1" != "-q" ]; then
     # discard local changes and re-apply our patch
     DATE=$(date '+%Y-%m-%d_%H-%M-%S')
     cd $QEMU_NAME
-    git diff > $QEMU_NAME-$DATE.patch
-    echo "Local changes backed up to $QEMU_NAME/$QEMU_NAME-$DATE.patch"
+    git diff > $QEMU_NAME-eos-$DATE.patch
+    echo "Local changes backed up to $QEMU_NAME/$QEMU_NAME-eos-$DATE.patch"
     git checkout .
-    patch -N -p1 < ../$ML_PATH/contrib/qemu/$QEMU_NAME.patch
+    patch -N -p1 < ../$ML_PATH/contrib/qemu/$QEMU_NAME-eos.patch
 fi

@@ -65,7 +65,7 @@ The default directory structure looks like this::
       └── ...                       # other scripts / utilities
 
 The sources are stored in the Magic Lantern tree, under ``contrib/qemu``. Our modifications to QEMU sources
-are stored as a patch file (``qemu-2.5.0.patch``), while the new files are stored directly. The install script
+are stored as a patch file (``qemu-2.5.0-eos.patch``), while the new files are stored directly. The install script
 copies the following files:
 
 .. code:: shell

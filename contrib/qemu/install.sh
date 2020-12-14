@@ -540,7 +540,7 @@ patch -N -p1 < ../$ML_PATH/contrib/qemu/$QEMU_NAME-recent-gcc.patch
 git add -u . && git commit -q -m "$QEMU_NAME patched for recent compilers"
 
 echo "Patching $QEMU_NAME for EOS emulation..."
-patch -N -p1 < ../$ML_PATH/contrib/qemu/$QEMU_NAME.patch
+patch -N -p1 < ../$ML_PATH/contrib/qemu/$QEMU_NAME-eos.patch
 # don't commit this one - we'll use "git diff" to update the above patch
 
 cd ..
