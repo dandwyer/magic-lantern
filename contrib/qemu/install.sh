@@ -527,17 +527,19 @@ mkdir -p tests
 cp -r $ML_PATH/contrib/qemu/tests/* tests/
 chmod +x tests/*.sh
 
-# apply our patch
+# apply our patches
 cd ${QEMU_NAME}
 mkdir -p hw/eos
 cp -r ../$ML_PATH/contrib/qemu/eos/* hw/eos/
 cp -r ../$ML_PATH/src/backtrace.[ch] hw/eos/dbi/
-if gcc -v 2>&1 | grep -q "gcc version [789]"; then
-  # hopefully these will also work for gcc 9.x (not tested)
-  patch -N -p1 < ../$ML_PATH/contrib/qemu/$QEMU_NAME-gcc78.patch
-  git add -u . && git commit -q -m "$QEMU_NAME patched for gcc 7.x and 8.x"
-fi
 
+# although created for gcc 7.x and newer compilers,
+# this doesn't break gcc 5.x and it also helps clang
+echo "Patching $QEMU_NAME for recent compilers..."
+patch -N -p1 < ../$ML_PATH/contrib/qemu/$QEMU_NAME-recent-gcc.patch
+git add -u . && git commit -q -m "$QEMU_NAME patched for recent compilers"
+
+echo "Patching $QEMU_NAME for EOS emulation..."
 patch -N -p1 < ../$ML_PATH/contrib/qemu/$QEMU_NAME.patch
 # don't commit this one - we'll use "git diff" to update the above patch
 
