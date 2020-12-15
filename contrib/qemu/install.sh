@@ -66,6 +66,9 @@ function choose_toolchain {
             # only ask once
             choose_toolchain_ask
         fi
+    else
+        echo "Unsupported platform: $(uname) $(uname -m)"
+        exit 1
     fi
 }
 
@@ -185,18 +188,28 @@ function valid_arm_gdb {
     fi
 
     # 8.0 and earlier is buggy on 64-bit; 8.1 is known to work
-    # 8.2 is also buggy, hopefully 8.3 and later will be OK
+    # 8.2 and newer are also buggy, tested until 10.1...
 
-    if arm-none-eabi-gdb -v 2>/dev/null | grep -Eq " ([8]\.[13-9]|[9]\.[0-9])"; then
+    if arm-none-eabi-gdb -v 2>/dev/null | grep -q " 8\.1\.[0-9]"; then
         # this one is good, even if compiled for 64-bit
         ARM_GDB="arm-none-eabi-gdb"
         return 0
     fi
 
-    if gdb-multiarch -v 2>/dev/null | grep -Eq " ([8]\.[13-9]|[9]\.[0-9])"; then
+    if gdb-multiarch -v 2>/dev/null | grep -q " 8\.1\.[0-9]"; then
         # this one is just as good
         ARM_GDB="gdb-multiarch"
         return 0
+    fi
+
+    if arm-none-eabi-gdb -v 2>/dev/null | grep -qE " (9|10)\.[0-9]+\.[0-9]+"; then
+        # arm-none-eabi-gdb 9.x and 10x are broken on i686 as well
+        return 1
+    fi
+
+    if gdb-multiarch -v 2>/dev/null | grep -qE " (9|10)\.[0-9]+\.[0-9]+"; then
+        # same for gdb-multiarch
+        return 1
     fi
 
     if arm-none-eabi-gdb -v 2>/dev/null | grep -q "host=i[3-6]86"; then
@@ -211,7 +224,7 @@ function valid_arm_gdb {
         return 0
     fi
 
-    echo "*** WARNING: some 64-bit GDB versions are known to have issues."
+    echo "*** WARNING: your GDB version may not be able to run our scripts."
     return 1
 }
 
