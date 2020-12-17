@@ -21,24 +21,47 @@ fi
 
 if [[ $CC == clang* ]]; then
     # fixme: some warnings about format strings in conditional expressions
+    # still needed? could not reproduce on recent systems (tested clang 3.8, 10.x, 12.x)
+    #EXTRA_CFLAGS="$EXTRA_CFLAGS -Wno-format-extra-args -Wno-format-zero-length"
     export CXX=${CXX:=clang++}
-    EXTRA_CFLAGS="-Wno-format-extra-args -Wno-format-zero-length"
     if [[ $CXX != clang++* ]]; then
         echo "Warning: not using clang++ (check CXX)"
     fi
 fi
 
 if [[ $CC == gcc* ]]; then
-    # gcc 6 warns about readdir_r
     export CXX=${CXX:=g++}
-    EXTRA_CFLAGS="-Wno-error=deprecated-declarations"
+    GCC_VERSION=$($CC -dumpfullversion -dumpversion)
+    GPP_VERSION=$($CXX -dumpfullversion -dumpversion)
+    GCC_MAJOR=${GCC_VERSION%%.*}
+    GPP_MAJOR=${GPP_VERSION%%.*}
+
+    if gcc -v 2>&1 | grep -q clang; then
+        echo "This version of gcc is actually clang..."
+        # no known warnings on current systems
+    else
+        if (($GCC_MAJOR >= 6)); then
+            # gcc 6 warns about readdir_r
+            EXTRA_CFLAGS="$EXTRA_CFLAGS -Wno-error=deprecated-declarations"
+        fi
+        if (($GCC_MAJOR >= 9)); then
+            # gcc 9 warns about unaligned pointer in packed structures and some more
+            # gcc 10 also warns about stringop-overflow
+            EXTRA_CFLAGS="$EXTRA_CFLAGS -Wno-error=address-of-packed-member -Wno-error=stringop-truncation -Wno-error=stringop-overflow -Wno-error=format-truncation"
+        fi
+    fi
+
     if [[ $CXX != g++* ]]; then
         echo "Warning: not using g++ (check CXX)"
     fi
+    if [[ "$GCC_VERSION" != "$GPP_VERSION" ]]; then
+        # QEMU configure script will take care of this one
+        echo "Warning: different gcc/g++ version (gcc $GCC_VERSION, g++ $GPP_VERSION)"
+    fi
 fi
 
-echo "Using $CC / $CXX with $EXTRA_CFLAGS"
+echo "Using $CC $GCC_VERSION / $CXX $GPP_VERSION with flags: $EXTRA_CFLAGS"
 echo "Options: $GUI_FLAGS $@"
 
 ./configure --target-list=arm-softmmu --disable-docs --enable-vnc $GUI_FLAGS \
---extra-cflags="$EXTRA_CFLAGS" "$@"
+    --extra-cflags="$EXTRA_CFLAGS" "$@"
