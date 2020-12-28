@@ -675,8 +675,8 @@ echo
 echo
 echo "Online documentation: "
 echo
-echo "   https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/README.rst"
-echo "   https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/HACKING.rst"
+echo "   https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/README.rst"
+echo "   https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/HACKING.rst"
 echo
 echo "Enjoy!"
 echo

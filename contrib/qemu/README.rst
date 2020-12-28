@@ -1,5 +1,3 @@
-.. If you see this (unformatted) text on Bitbucket, please try reloading the page.
-
 How can I run Magic Lantern in QEMU?
 ====================================
 
@@ -112,7 +110,7 @@ __ `Opening the card door`_
 Installation
 ------------
 
-It is recommended to install from the `qemu <https://bitbucket.org/hudson/magic-lantern/branch/qemu>`_
+It is recommended to install from the `qemu <https://foss.heptapod.net/magic-lantern/magic-lantern/-/tree/branch/qemu/contrib/qemu>`_
 branch, as it will contain the latest developments. The installation will be performed
 outside the main magic-lantern directory, therefore you will be able to emulate any ML branch
 without additional gymnastics (you will **not** have to merge ``qemu`` into your working branch or worry about it).
@@ -121,7 +119,7 @@ without additional gymnastics (you will **not** have to merge ``qemu`` into your
 
    .. code:: shell
 
-     hg clone https://bitbucket.org/hudson/magic-lantern
+     hg clone https://foss.heptapod.net/magic-lantern/magic-lantern
      cd magic-lantern
 
    |
@@ -161,7 +159,7 @@ without additional gymnastics (you will **not** have to merge ``qemu`` into your
    or just watch out for an error about missing ``SFDATA.BIN`` when trying the next step.
 
    If your camera requires a serial flash, compile the 
-   `sf_dump module <https://bitbucket.org/hudson/magic-lantern/src/unified/modules/sf_dump>`_
+   `sf_dump module <https://foss.heptapod.net/magic-lantern/magic-lantern/-/tree/branch/unified/modules/sf_dump>`_
    and run it on your camera to get this file.
 
    |
@@ -270,7 +268,7 @@ To install Magic Lantern to the virtual card, you may:
 - use ``make install_qemu`` from your platform directory, or ``make CAM_install_qemu`` 
   or ``make CAM.FW_install_qemu`` from your ML root directory
   (requires mtools, but you do not have to mount your card images;
-  works since `27f4105 <https://bitbucket.org/hudson/magic-lantern/commits/27f4105cfa83>`_):
+  works since `27f4105 <https://foss.heptapod.net/magic-lantern/magic-lantern/-/commit/5437eeb81f6759e42c7c1b194b2fdacb6916be28>`_):
 
   .. code:: shell
 
@@ -301,7 +299,7 @@ To install Magic Lantern to the virtual card, you may:
 
   Please note: ``make install_qemu`` is a recent addition and may not be available in all branches.
   In this case, you may either use the first method, or sync with the "unified" branch (``hg merge unified``),
-  or manually import changeset `d5ad86f <https://bitbucket.org/hudson/magic-lantern/commits/d5ad86f0d284>`_.
+  or manually import changeset `d5ad86f <https://foss.heptapod.net/magic-lantern/magic-lantern/-/commit/6313c5fa52c38104fa8f2bb10a1ab8ae6e54e9bb>`_.
   Unfortunately, these rules won't work from ``Makefile.user``.
 
 The included card images are already bootable for EOS firmwares (but not for PowerShots).
@@ -787,7 +785,7 @@ Using ``qprintf`` and friends
 `````````````````````````````
 
 The QEMU debugging API
-(`qemu-util.h <https://bitbucket.org/hudson/magic-lantern/src/qemu/src/qemu-util.h>`_, included by default by ``dryos.h``)
+(`qemu-util.h <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/src/qemu-util.h>`_, included by default by ``dryos.h``)
 exposes the following functions to be used in Magic Lantern code:
 
 :qprintf: heavyweight, similar to printf; requires vsnprintf from Canon code
@@ -969,7 +967,7 @@ Custom logging hook (with colors)::
     c
   end
 
-Look in `debug-logging.gdb <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/scripts/debug-logging.gdb#debug-logging.gdb>`_
+Look in `debug-logging.gdb <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/scripts/debug-logging.gdb>`_
 for common firmware functions you may want to log, and in ``*/debugmsg.gdb`` for usage examples.
 
 You may also use `dprintf <https://sourceware.org/gdb/onlinedocs/gdb/Dynamic-Printf.html>`_ if you prefer::

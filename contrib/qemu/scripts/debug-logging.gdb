@@ -1126,7 +1126,7 @@ They are received in SIO3_ISR and queued until the PropMgr task is able
 to handle them, so it may be hard to match them with other debug messages
 without logging this function.
 Known MPU property IDs:
-https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/eos/mpu_spells/known_spells.py
+https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/eos/mpu_spells/known_spells.py
 end
 
 define prop_lookup_maybe_log
@@ -1488,7 +1488,7 @@ document SetEDmac_log
 Log calls to SetEDmac (arguments: channel, buffer, struct edmac_info *, flags).
 EDMAC info structure: raw numbers are printed, but not interpreted, see:
 - https://www.magiclantern.fm/forum/index.php?topic=18315.0 (EDMAC transfer model)
-- https://bitbucket.org/hudson/magic-lantern/src/unified/modules/edmac/edmac_util.c (edmac_format_size)
+- https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/unified/modules/edmac/edmac_util.c (edmac_format_size)
 end
 
 # date/time helpers

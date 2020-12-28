@@ -1,5 +1,3 @@
-.. If you see this (unformatted) text on Bitbucket, please try reloading the page.
-
 EOS firmware in QEMU - development and reverse engineering guide
 ================================================================
 
@@ -527,7 +525,7 @@ Easiest case: code gets stuck reading some MMIO register. Solutions:
 - try random values (it may even work for simple handshakes)
 
 Example for 5D3: comment out register ``0xC0400204`` (``case 0x204`` under ``C0400000``,
-introduced in `b79cd7a <https://bitbucket.org/hudson/magic-lantern/commits/b79cd7a>`_)
+introduced in `b79cd7a <https://foss.heptapod.net/magic-lantern/magic-lantern/-/commit/e40aeb41b3846aa30ea94b44ab49aeab9a4f19a5>`_)
 and run with ``-d io``::
 
   [BASIC]    at 0xFFFF066C:00000000 [0xC0400204] -> 0x0       : ???
@@ -550,7 +548,7 @@ Easy, right?
 
 Harder case: the value of some MMIO register steers the code on a path you don't want.
 
-Example for 1300D, before changeset `cbf042b <https://bitbucket.org/hudson/magic-lantern/commits/cbf042b>`_
+Example for 1300D, before changeset `cbf042b <https://foss.heptapod.net/magic-lantern/magic-lantern/-/commit/57fb8141f01065195279fabbc5704855b10ba3f1>`_
 (to try this, manually undo the linked change):
 
 After adding the basic definition, the bootloader shows a factory menu, rather than jumping to main firmware.
@@ -625,7 +623,7 @@ Step by step:
   - make sure you get periodical interrupts when running with ``-d io,int``, even when all DryOS tasks are idle
 
   Example: 1300D (comment out ``dryos_timer_id`` and ``dryos_timer_interrupt`` from the 1300D section
-  in ``model_list.c`` to get the state before `7f1a436 <https://bitbucket.org/hudson/magic-lantern/commits/7f1a436#chg-contrib/qemu/eos/model_list.c>`_)::
+  in ``model_list.c`` to get the state before `7f1a436 <https://foss.heptapod.net/magic-lantern/magic-lantern/-/commit/7d7c4247e2752c603e945b1f39498194f7cc14c7#ab988524dbc98fad520db2edfb579770144b8234>`_)::
 
     [INT]      at 0xFE0C3E10:FE0C0C18 [0xC0201010] <- 0x9       : Enabled interrupt 09h
     ...
@@ -646,13 +644,13 @@ Step by step:
   - identify the pointer to current DryOS task
 
     This is called ``current_task_addr`` in ``model_list.c``, ``CURRENT_TASK`` in ``debugmsg.gdb`` or ``current_task`` in ML stubs —
-    see `debug-logging.gdb <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/scripts/debug-logging.gdb#debug-logging.gdb>`_
+    see `debug-logging.gdb <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/scripts/debug-logging.gdb>`_
     for further hints.
 
   - identify where the current interrupt is stored
   
     Look in the interrupt handler — breakpoint at 0x18 to find it — and find ``CURRENT_ISR`` in
-    `debug-logging.gdb <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/scripts/debug-logging.gdb#debug-logging.gdb>`_,
+    `debug-logging.gdb <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/scripts/debug-logging.gdb>`_,
     or current_interrupt in ML stubs.
     If you can't find it, you may set it to 0, but if you do, please take task names with a grain of salt if they are printed from some interrupt handler.
 
@@ -664,7 +662,7 @@ Step by step:
 - make the startup sequence run (see `EOS firmware startup sequence`_)
 - these may need tweaking: WriteProtect switch, HotPlug events (usually GPIOs)
 - make sure the GUI tasks are starting (in particular, GuiMainTask)
-- identify button codes (`extract_button_codes.py <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/eos/mpu_spells/extract_button_codes.py>`_)
+- identify button codes (`extract_button_codes.py <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/eos/mpu_spells/extract_button_codes.py>`_)
 - make sure the display is initialized, identify the image buffers etc.
 
 EOS firmware startup sequence
@@ -747,7 +745,7 @@ The DryOS timer interrupt (heartbeat) was different from *all other* DIGIC 4 and
 the emulation to go **that** far without a valid heartbeat (that way, we've lost many hours of debugging).
 Now scroll up and read that section again ;)
 
-Fixing that and a few other things (`commit 7f1a436 <https://bitbucket.org/hudson/magic-lantern/commits/7f1a436>`_)
+Fixing that and a few other things (`commit 7f1a436 <https://foss.heptapod.net/magic-lantern/magic-lantern/-/commit/7d7c4247e2752c603e945b1f39498194f7cc14c7>`_)
 were enough to bring the GUI on 1300D.
 
 PowerShot firmware startup sequence
@@ -812,7 +810,7 @@ hiding the error message from the user is *not* the way to solve it!**
 
 Examples:
 
-**Patching the UTimer waiting routine on 80D** (``80D/patches.gdb``, commit `7ea57e7 <https://bitbucket.org/hudson/magic-lantern/commits/7ea57e73c09#chg-contrib/qemu/scripts/80D/patches.gdb>`_):
+**Patching the UTimer waiting routine on 80D** (``80D/patches.gdb``, commit `7ea57e7 <https://foss.heptapod.net/magic-lantern/magic-lantern/-/commit/a683fdb973e6140fae0c1ac054f101ce76b5a8d5>`_):
 
 .. code::
 
@@ -828,7 +826,7 @@ See arm-mcr.h for a few useful instructions encodings, use an assembler or read 
 (in particular, `ARM Architecture Reference Manual <http://www.scss.tcd.ie/~waldroj/3d1/arm_arm.pdf>`_ 
 and `Thumb-2 Supplement Reference Manual <http://read.pudn.com/downloads159/doc/709030/Thumb-2SupplementReferenceManual.pdf>`_).
 
-**Patching the EstimatedSize assertion on 80D** (``80D/patches.gdb``, commit `b6c5710 <https://bitbucket.org/hudson/magic-lantern/commits/b6c5710afebbffbb194f9102fbfa9798b99fde1b?at=qemu#chg-contrib/qemu/scripts/80D/patches.gdb>`_)
+**Patching the EstimatedSize assertion on 80D** (``80D/patches.gdb``, commit `b6c5710af <https://foss.heptapod.net/magic-lantern/magic-lantern/-/commit/8b508a551481e1fc31c0551fb765d58c7937ac6c#a00dc09672f2d3657f02a954e0f25f464763b032>`_)
 
 After enabling the above UTimer patch, with the generic MPU messages you may get this error::
 
@@ -853,7 +851,7 @@ then run the firmware under GDB, with ``-d callstack``:
   ...
 
 The function you are looking for is ``0xFE19B03B`` (could have been any of the callers) and the assertion was triggered at ``0xfe19b14b``.
-`Our patch <https://bitbucket.org/hudson/magic-lantern/commits/b6c5710afebbffbb194f9102fbfa9798b99fde1b?at=qemu#chg-contrib/qemu/scripts/80D/patches.gdb>`_
+`Our patch <https://foss.heptapod.net/magic-lantern/magic-lantern/-/commit/8b508a551481e1fc31c0551fb765d58c7937ac6c#a00dc09672f2d3657f02a954e0f25f464763b032>`_
 is at ``0xFE19B06A``, in the function identified with this method.
 
 Incorrect firmware version?
@@ -895,7 +893,7 @@ Payload format is: ``[class] [id] <data> [ack_requested]``.
 
 The first two bytes can be used to identify the message
 (and for messages that refer to a property, to identify the property).
-Property events are in `known_spells.h <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/eos/mpu_spells/known_spells.h>`_;
+Property events are in `known_spells.h <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/eos/mpu_spells/known_spells.h>`_;
 GUI events (button codes) have ``class = 06``.
 
 To log the MPU communication:
@@ -932,7 +930,7 @@ The message sent by the main CPU is::
 - ``04`` is payload size (always ``message_size - 1`` or ``message_size - 2``)
 - ``02 00 00 00`` is the payload:
 
-  - ``02 00`` identifies the message (look it up in `known_spells.h <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/eos/mpu_spells/known_spells.h>`_)
+  - ``02 00`` identifies the message (look it up in `known_spells.h <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/eos/mpu_spells/known_spells.h>`_)
   - the last ``00`` means no special confirmation was requested (``Complete WaitID`` string)
   - the remaining ``00`` may contain property data or other information (nothing interesting here)
 
@@ -960,10 +958,10 @@ The second and third messages are easier to grasp::
 How do you get these messages?
 
 From a `startup log <http://builds.magiclantern.fm/jenkins/view/Experiments/job/startup-log/>`_ (`dm-spy-experiments <http://www.magiclantern.fm/forum/index.php?topic=2388.0>`_), use 
-`extract_init_spells.py <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/eos/mpu_spells/extract_init_spells.py>`_
-to parse the MPU communication into C code (see `make_spells.sh <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/eos/mpu_spells/make_spells.sh>`_).
+`extract_init_spells.py <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/eos/mpu_spells/extract_init_spells.py>`_
+to parse the MPU communication into C code (see `make_spells.sh <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/eos/mpu_spells/make_spells.sh>`_).
 
-There are also generic spells in `generic.h <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/eos/mpu_spells/generic.h>`_
+There are also generic spells in `generic.h <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/eos/mpu_spells/generic.h>`_
 that are recognized by most EOS models and are good enough to enable navigation on Canon menus.
 
 Things to check:
@@ -984,11 +982,11 @@ define ``.serial_flash_size`` in ``model_list.c`` and a few other parameters:
 - SIO channel (used for SPI transfers)
 - check SFIO and SFDMA in ``eos_handlers`` (for DMA transfers — Canon reused the same kind of DMA used for SD card).
 
-Dumper: `sf_dump module <https://bitbucket.org/hudson/magic-lantern/src/unified/modules/sf_dump>`_.
+Dumper: `sf_dump module <https://foss.heptapod.net/magic-lantern/magic-lantern/-/tree/branch/unified/modules/sf_dump>`_.
 
 For early ports, you might (or might not) get away with serial flash contents from another model.
 
-`Patching <https://bitbucket.org/hudson/magic-lantern/commits/652133663c39>`_ might help.
+`Patching <https://foss.heptapod.net/magic-lantern/magic-lantern/-/commit/bd4cdc0497e4354f71747031afc57ec1d1478943>`_ might help.
 When editing SFDATA.BIN files manually, watch out — some data blocks are shifted by 4 bits for some reason.
 
 WriteProtect switch
@@ -1053,7 +1051,7 @@ This is the perfect tool for studying them. Start at:
 - task_create (from GDB scripts)
 - semaphores (some GDB scripts have them)
 - message queues (some GDB scripts have them)
-- heartbeat timer (dryos_timer_id/interrupt in `model_list.c <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/eos/model_list.c>`_)
+- heartbeat timer (dryos_timer_id/interrupt in `model_list.c <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/eos/model_list.c>`_)
 - interrupt handler (follow the code at 0x18)
 - to debug: ``-d io,int`` is very helpful (although a bit too verbose)
 
@@ -1085,7 +1083,7 @@ EOS menus
 
     - boot flags
     - SROM menu on models with serial flash
-    - Bufcon (GPIO names, `hidden menu <https://bitbucket.org/hudson/magic-lantern/commits/5d1f223994c4b437bfaae51b22e0fb216e73a4b7#chg-contrib/qemu/eos/eos_bufcon_100D.h>`_)
+    - Bufcon (GPIO names, `hidden menu <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/3bf1042657334a2266b74540adf3114cddcee691/contrib/qemu/eos/eos_bufcon_100D.h>`_)
 
 - FACTADJ menu
 
@@ -1146,7 +1144,7 @@ Cross-checking the emulation with actual hardware
 Checking MMIO values from actual hardware
 '''''''''''''''''''''''''''''''''''''''''
 
-See `this commit <https://bitbucket.org/hudson/magic-lantern/commits/726806f3bc352c41bbd72bf40fdbab3c7245039d>`_:
+See `this commit <https://foss.heptapod.net/magic-lantern/magic-lantern/-/commit/3a0cfbe682cb31b0794d6a866d019c231306b6a1>`_:
 
 - ``./run_canon_fw.sh 5D3 [...] -d io_log``
 - copy/paste some entries into ``dm-spy-extra.c`` (grep for ``mmio_log`` to find them)
@@ -1168,14 +1166,14 @@ MMIO handlers: ``eos_handlers`` -> ``eos_handle_whatever`` (with ``io_log`` for 
 Useful: ``eos_get_current_task_name/id/stack``, ``eos_mem_read/write``.
 
 To extract MPU messages from a `startup log <http://builds.magiclantern.fm/jenkins/view/Experiments/job/startup-log/>`_,
-use `extract_init_spells.py <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/eos/mpu_spells/extract_init_spells.py>`_ (see `MPU communication`_).
+use `extract_init_spells.py <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/eos/mpu_spells/extract_init_spells.py>`_ (see `MPU communication`_).
 
 To customize keys or add support for new buttons or GUI events,
-edit `mpu.c <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/eos/mpu.c>`_,
-`button_codes.h <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/eos/mpu_spells/button_codes.h>`_
-and `extract_button_codes.py <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/eos/mpu_spells/extract_button_codes.py>`_.
+edit `mpu.c <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/eos/mpu.c>`_,
+`button_codes.h <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/eos/mpu_spells/button_codes.h>`_
+and `extract_button_codes.py <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/eos/mpu_spells/extract_button_codes.py>`_.
 
-Known MPU messages and properties are exported to `known_spells.h <https://bitbucket.org/hudson/magic-lantern/src/qemu/contrib/qemu/eos/mpu_spells/known_spells.h>`_.
+Known MPU messages and properties are exported to `known_spells.h <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/eos/mpu_spells/known_spells.h>`_.
 
 Committing your changes
 ```````````````````````

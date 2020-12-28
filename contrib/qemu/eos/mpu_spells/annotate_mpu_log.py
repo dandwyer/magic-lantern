@@ -7,7 +7,7 @@ if len(sys.argv) <= 2:
     print "This script looks for mpu_send/mpu_recv entries in a log file, and adds comments"
     print "MPU messages are read from known_spells.py; button codes are parsed from button_codes.h"
     print "Similar script for ADTG/CMOS/ENGIO registers:"
-    print "https://bitbucket.org/hudson/magic-lantern/src/iso-research/modules/adtg_gui/annotate_log.py" 
+    print "https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/iso-research/modules/adtg_gui/annotate_log.py" 
     print
     print "Usage:"
     print "python annotate_mpu_log.py 5D3 input.log output.log  # guess"
