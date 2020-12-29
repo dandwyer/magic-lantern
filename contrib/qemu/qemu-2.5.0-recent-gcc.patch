@@ -25,7 +25,7 @@ index c5f8e8dc..b2426804 100644
                   s->test_file->bs->exact_filename);
      }
 diff --git a/configure b/configure
-index b9552fda..bb1e6dd3 100755
+index b9552fda..30363e10 100755
 --- a/configure
 +++ b/configure
 @@ -3325,7 +3325,7 @@ EOF
@@ -46,15 +46,49 @@ index b9552fda..bb1e6dd3 100755
  
  int main(void)
  {
+@@ -4493,6 +4493,20 @@ if test "$fortify_source" != "no"; then
+   fi
+ fi
+ 
++##########################################
++# check for sysmacros.h
++
++have_sysmacros=no
++cat > $TMPC << EOF
++#include <sys/sysmacros.h>
++int main(void) {
++    return makedev(0, 0);
++}
++EOF
++if compile_prog "" "" ; then
++    have_sysmacros=yes
++fi
++
+ ##########################################
+ # End of CC checks
+ # After here, no more $cc or $ld runs
+@@ -5475,6 +5489,10 @@ if test "$gcov" = "yes" ; then
+   echo "GCOV=$gcov_tool" >> $config_host_mak
+ fi
+ 
++if test "$have_sysmacros" = "yes" ; then
++  echo "CONFIG_SYSMACROS=y" >> $config_host_mak
++fi
++
+ # use included Linux headers
+ if test "$linux" = "yes" ; then
+   mkdir -p linux-headers
 diff --git a/hw/9pfs/virtio-9p.c b/hw/9pfs/virtio-9p.c
-index f972731f..7eb54a84 100644
+index f972731f..f883d53e 100644
 --- a/hw/9pfs/virtio-9p.c
 +++ b/hw/9pfs/virtio-9p.c
-@@ -22,6 +22,7 @@
+@@ -22,6 +22,9 @@
  #include "virtio-9p-coth.h"
  #include "trace.h"
  #include "migration/migration.h"
++#ifdef CONFIG_SYSMACROS
 +#include <sys/sysmacros.h>
++#endif
  
  int open_fd_hw;
  int total_open_fd;
@@ -122,17 +156,19 @@ index 2969c44e..84e13e49 100644
  
  /***********************************************************/
 diff --git a/qga/commands-posix.c b/qga/commands-posix.c
-index c2ff9702..ae64df0c 100644
+index c2ff9702..965128a2 100644
 --- a/qga/commands-posix.c
 +++ b/qga/commands-posix.c
-@@ -13,6 +13,7 @@
- 
- #include <glib.h>
- #include <sys/types.h>
+@@ -29,6 +29,9 @@
+ #include "qemu/queue.h"
+ #include "qemu/host-utils.h"
+ #include "qemu/sockets.h"
++#ifdef CONFIG_SYSMACROS
 +#include <sys/sysmacros.h>
- #include <sys/ioctl.h>
- #include <sys/wait.h>
- #include <unistd.h>
++#endif
+ 
+ #ifndef CONFIG_HAS_ENVIRON
+ #ifdef __APPLE__
 diff --git a/util/memfd.c b/util/memfd.c
 index 7c406914..3636f0d9 100644
 --- a/util/memfd.c
