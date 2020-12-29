@@ -32,8 +32,8 @@ function choose_toolchain_ask {
     echo "*** You may choose either a 32-bit or a 64-bit toolchain:"
     echo
     echo "1) 32-bit 5_4-2016q3 (recommended; default in ML Makefile)"
-    if [  -z "$(lsb_release -i 2>/dev/null | grep Ubuntu)" ]; then
-        # FIXME: auto-install 32-bit dependencies on systems other than Ubuntu?
+    if [  -z "$(lsb_release -i 2>/dev/null | grep -E 'Ubuntu|Debian')" ]; then
+        # FIXME: auto-install 32-bit dependencies on systems other than Ubuntu/Debian?
         echo "   On 64-bit systems, you may need to install 32-bit libraries manually."
     fi
     echo
@@ -262,8 +262,8 @@ if [ $(uname) == "Darwin" ]; then
     GREP=ggrep
 fi
 
-if [  -n "$(lsb_release -i 2>/dev/null | grep Ubuntu)" ]; then
-    # Ubuntu-based system? (including WSL)
+if [  -n "$(lsb_release -i 2>/dev/null | grep -E 'Ubuntu|Debian')" ]; then
+    # Ubuntu/Debian-based system? (including WSL)
     # install these packages, if not already
     # only request sudo if any of them is missing
     # instead of GTK (libgtk2.0-dev), you may prefer SDL (libsdl1.2-dev)
@@ -294,7 +294,7 @@ if [  -n "$(lsb_release -i 2>/dev/null | grep Ubuntu)" ]; then
             echo "   and install it into your HOME directory, without the package manager."
             echo "   Recommended."
             echo
-            echo "2) Install gcc-arm-none-eabi from Ubuntu repository (native for your system)"
+            echo "2) Install gcc-arm-none-eabi from APT repository (native for your system)"
             echo "   and compile arm-none-eabi-gdb 8.1 from source. Slower installation."
             echo
             echo "3) Manually install the toolchain from https://launchpad.net/gcc-arm-embedded."
@@ -309,7 +309,7 @@ if [  -n "$(lsb_release -i 2>/dev/null | grep Ubuntu)" ]; then
             echo "   and install it into your HOME directory, without the package manager."
             echo "   Recommended."
             echo
-            echo "2) Install gcc-arm-none-eabi from Ubuntu repository (64-bit binaries)"
+            echo "2) Install gcc-arm-none-eabi from APT repository (64-bit binaries)"
             echo "   and compile arm-none-eabi-gdb 8.1 from source. Slower, but known to work."
             echo
             echo "3) Manually install arm-none-eabi-gcc / gdb 8.1 (7-2018-q2, not latest!)"
@@ -352,7 +352,7 @@ if [  -n "$(lsb_release -i 2>/dev/null | grep Ubuntu)" ]; then
         echo "*** You have a valid ARM GCC/GDB already installed - using that one."
     fi
 
-    echo "*** Checking dependencies for Ubuntu..."
+    echo "*** Checking dependencies for Ubuntu/Debian..."
     echo
     # https://wiki.debian.org/ListInstalledPackages
     # dpkg -l also returns packages that are not installed
@@ -366,7 +366,7 @@ if [  -n "$(lsb_release -i 2>/dev/null | grep Ubuntu)" ]; then
 
     if [ "$deps_installed" == "no" ]; then
         echo
-        echo "*** Installing dependencies for Ubuntu..."
+        echo "*** Installing dependencies for Ubuntu/Debian..."
         echo
         if [[ "$packages" == *i386* ]]; then
             sudo dpkg --add-architecture i386
@@ -386,7 +386,7 @@ if [  -n "$(lsb_release -i 2>/dev/null | grep Ubuntu)" ]; then
 
     if [ "$deps_installed" == "no" ]; then
         echo
-        echo "*** Error: Ubuntu dependencies could not be installed."
+        echo "*** Error: Ubuntu/Debian dependencies could not be installed."
         echo
         exit 1
     fi
@@ -403,7 +403,7 @@ if [ "$COMPILE_GDB" == "true" ]; then
     install_gdb
 fi
 
-# all systems (including Mac, or Ubuntu/WSL if previous steps failed)
+# all systems (including Mac, or Ubuntu/Debian/WSL if previous steps failed)
 
 if valid_arm_gcc; then
     if ! valid_arm_gdb; then
