@@ -273,7 +273,7 @@ if [  -n "$(lsb_release -i 2>/dev/null | grep Ubuntu)" ]; then
         libgtk2.0-dev xz-utils mtools netcat-openbsd
         python3 python3-pip python3-docutils"
 
-    if [ -n $(apt-cache search --names-only '^python2$') ]; then
+    if [ -n "$(apt-cache search --names-only '^python2$')" ]; then
         packages="$packages python2"
     else
         packages="$packages python"
