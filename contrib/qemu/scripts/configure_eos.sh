@@ -3,7 +3,7 @@
 SYSTEM=`uname`
 echo "Setting up QEMU on $SYSTEM..."
 
-OPTIONS="--target-list=arm-softmmu --disable-docs --enable-vnc"
+OPTIONS="--target-list=arm-softmmu --disable-docs --enable-vnc --audio-drv-list="
 
 if python2 -V; then
     OPTIONS="$OPTIONS --python=python2"
@@ -42,7 +42,7 @@ if [[ $CC == gcc* ]]; then
     GCC_MAJOR=${GCC_VERSION%%.*}
     GPP_MAJOR=${GPP_VERSION%%.*}
 
-    if gcc -v 2>&1 | grep -q clang; then
+    if $CC -v 2>&1 | grep -q clang; then
         echo "This version of gcc is actually clang..."
         # no known warnings on current systems
     else
