@@ -16,8 +16,9 @@ ARM_GDB=
 # valid values: x86, x64
 TOOLCHAIN_ARCH=${TOOLCHAIN_ARCH:=}
 
-# whether to compile GDB 8.1 from source
-COMPILE_GDB=${COMPILE_GDB:=false}
+# whether to compile GDB from source
+# must specify version, e.g. COMPILE_GDB=8.1
+COMPILE_GDB=${COMPILE_GDB:=}
 
 echo
 echo "This will setup QEMU for emulating Magic Lantern."
@@ -144,7 +145,8 @@ function install_gdb {
     # we may need to compile a recent GDB
     # the latest pre-built version is buggy (at the time of writing)
     # on Linux, the old 32-bit version works fine, but we can't run it on Mac/WSL
-    GDB_DIR=$HOME/gdb-arm-none-eabi-8_1
+    GDB_VERSION=$COMPILE_GDB
+    GDB_DIR=$HOME/gdb-arm-none-eabi-$GDB_VERSION
 
     if [ ! -f $GDB_DIR/bin/arm-none-eabi-gdb ]; then
         pushd . > /dev/null
@@ -152,17 +154,17 @@ function install_gdb {
         mkdir $GDB_DIR
         cd $GDB_DIR
         echo
-        echo "*** Setting up GDB in $(pwd)/  ..."
+        echo "*** Setting up GDB $GDB_VERSION in $(pwd)/  ..."
         mkdir src
         cd src
-        wget $WGET_OPTS $MIRROR/gdb/gdb-8.1.tar.xz
+        wget $WGET_OPTS $MIRROR/gdb/gdb-$GDB_VERSION.tar.xz
         echo
-        tar xJf gdb-8.1.tar.xz || exit 1
+        tar xJf gdb-$GDB_VERSION.tar.xz || exit 1
         echo
         mkdir build-gdb
         cd build-gdb
         echo "Configuring arm-none-eabi-gdb... (configure.log)"
-        ../gdb-8.1/configure --target=arm-none-eabi --prefix=$GDB_DIR/ &> configure.log || gdb_error configure.log
+        ../gdb-$GDB_VERSION/configure --target=arm-none-eabi --prefix=$GDB_DIR/ &> configure.log || gdb_error configure.log
         echo "Building arm-none-eabi-gdb... (make.log)"
         make &> make.log || gdb_error make.log
         echo "Installing arm-none-eabi-gdb... (install.log)"
@@ -189,21 +191,22 @@ function valid_arm_gdb {
 
     # 8.0 and earlier is buggy on 64-bit; 8.1 is known to work
     # 8.2 and newer are also buggy, tested until 10.1...
+    # 8.1.1 also buggy
 
-    if arm-none-eabi-gdb -v 2>/dev/null | grep -q " 8\.1\.[0-9]"; then
+    if arm-none-eabi-gdb -v 2>/dev/null | grep -qE " 8\.1(\.0|$)"; then
         # this one is good, even if compiled for 64-bit
         ARM_GDB="arm-none-eabi-gdb"
         return 0
     fi
 
-    if gdb-multiarch -v 2>/dev/null | grep -q " 8\.1\.[0-9]"; then
+    if gdb-multiarch -v 2>/dev/null | grep -qE " 8\.1(\.0|$)"; then
         # this one is just as good
         ARM_GDB="gdb-multiarch"
         return 0
     fi
 
     if arm-none-eabi-gdb -v 2>/dev/null | grep -qE " (9|10)\.[0-9]+\.[0-9]+"; then
-        # arm-none-eabi-gdb 9.x and 10x are broken on i686 as well
+        # arm-none-eabi-gdb 9.x and 10.x are broken on i686 as well
         return 1
     fi
 
@@ -337,7 +340,7 @@ if [  -n "$(lsb_release -i 2>/dev/null | grep -E 'Ubuntu|Debian')" ]; then
                 # install native (64 or 32) arm-none-eabi-gcc from package manager
                 # and compile arm-none-eabi-gdb 8.1 from source
                 packages="$packages gcc-arm-none-eabi libnewlib-arm-none-eabi"
-                COMPILE_GDB=true
+                COMPILE_GDB=8.1
                 ;;
             3)
                 # user will install arm-none-eabi-gdb and run the script again
@@ -398,7 +401,7 @@ if [ -n "$TOOLCHAIN_ARCH" ]; then
     install_gcc
 fi
 
-if [ "$COMPILE_GDB" == "true" ]; then
+if [ -n "$COMPILE_GDB" ]; then
     # if user already selected to compile GDB from source, don't ask again
     install_gdb
 fi
