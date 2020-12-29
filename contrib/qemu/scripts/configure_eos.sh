@@ -2,11 +2,17 @@
 
 SYSTEM=`uname`
 echo "Setting up QEMU on $SYSTEM..."
- 
+
+OPTIONS="--target-list=arm-softmmu --disable-docs --enable-vnc"
+
+if python2 -V; then
+    OPTIONS="$OPTIONS --python=python2"
+fi
+
 if [[ $SYSTEM == "Darwin" ]]; then
     # Mac uses clang and Cocoa by default; it doesn't like SDL
     export CC=${CC:=clang}
-    GUI_FLAGS="--disable-sdl"
+    OPTIONS="$OPTIONS --disable-sdl"
 else
     # gcc 4 uses gnu90 by default, but we use C99 code
     # passing C99 to g++ gives warning, but QEMU treats all warnings as errors
@@ -15,7 +21,7 @@ else
 
     if [[ $DISPLAY != "" ]]; then
         # gtk is recommended, but sdl works too
-        GUI_FLAGS="--enable-gtk"
+        OPTIONS="$OPTIONS --enable-gtk"
     fi
 fi
 
@@ -61,7 +67,6 @@ if [[ $CC == gcc* ]]; then
 fi
 
 echo "Using $CC $GCC_VERSION / $CXX $GPP_VERSION with flags: $EXTRA_CFLAGS"
-echo "Options: $GUI_FLAGS $@"
+echo "Options: $OPTIONS $@"
 
-./configure --target-list=arm-softmmu --disable-docs --enable-vnc $GUI_FLAGS \
-    --extra-cflags="$EXTRA_CFLAGS" "$@"
+./configure $OPTIONS --extra-cflags="$EXTRA_CFLAGS" "$@"

@@ -273,6 +273,12 @@ if [  -n "$(lsb_release -i 2>/dev/null | grep Ubuntu)" ]; then
         libgtk2.0-dev xz-utils mtools netcat-openbsd
         python3 python3-pip python3-docutils"
 
+    if [ -n $(apt-cache search --names-only '^python2$') ]; then
+        packages="$packages python2"
+    else
+        packages="$packages python"
+    fi
+
     # if a valid arm-none-eabi-gcc/gdb is already in PATH, try to use that
     # otherwise, we'll try to install something
     if ! valid_arm_gdb || ! valid_arm_gcc; then
