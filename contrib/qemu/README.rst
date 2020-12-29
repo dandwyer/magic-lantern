@@ -503,7 +503,7 @@ Please consider creating an image of your SD (or CF) card instead, as described 
 
 If you still wish to run the emulation directly from a physical SD/CF card:
 
-- See `QEMU docs (Using host drives) <https://qemu.weilnetz.de/doc/qemu-doc.html#Using-host-drives>`_
+- See `QEMU docs (Using host drives) <https://qemu.weilnetz.de/doc/5.2/system/images.html#using-host-drives>`_
   and make sure you understand `these warnings <https://wiki.archlinux.org/index.php/QEMU#Using_any_real_partition_as_the_single_primary_partition_of_a_hard_disk_image>`_
 - Replace ``file=sd.img`` (or ``file=cf.img``) with ``file=/dev/your-sd-card`` in ``run_canon_fw.sh``
 - Configure the appropriate permissions and run the emulation as usual.
@@ -970,7 +970,7 @@ Custom logging hook (with colors)::
 Look in `debug-logging.gdb <https://foss.heptapod.net/magic-lantern/magic-lantern/-/blob/branch/qemu/contrib/qemu/scripts/debug-logging.gdb>`_
 for common firmware functions you may want to log, and in ``*/debugmsg.gdb`` for usage examples.
 
-You may also use `dprintf <https://sourceware.org/gdb/onlinedocs/gdb/Dynamic-Printf.html>`_ if you prefer::
+You may also use `dprintf <https://sourceware.org/gdb/onlinedocs/gdb/Dynamic-printf.html>`_ if you prefer::
 
   dprintf *0x8b10, "[ %s:%08X ] task_create(%s, prio=%x, stack=%x, entry=%x, arg=%x)\n", CURRENT_TASK_NAME, $lr-4, $r0, $r1, $r2, $r3, *(int*)$sp
 

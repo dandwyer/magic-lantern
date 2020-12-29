@@ -323,7 +323,7 @@ Initial firmware analysis
    on new models -- see the ARM Architecture Reference Manual (aka ARM ARM)
    for the CPU you are interested in:
 
-   - DIGIC 2..5: ARM946E-S `[1] <http://chdk.setepontos.com/index.php?topic=9801.msg99865#msg99865>`_ -- `arm_arm.pdf <http://www.scss.tcd.ie/~waldroj/3d1/arm_arm.pdf>`_;
+   - DIGIC 2..5: ARM946E-S `[1] <http://chdk.setepontos.com/index.php?topic=9801.msg99865#msg99865>`_ -- `arm_arm.pdf <https://www.cs.miami.edu/home/burt/learning/Csc521.141/Documents/arm_arm.pdf>`_;
    - DIGIC 6: Cortex R4 `[2] <http://chdk.setepontos.com/index.php?topic=11316.msg124273#msg124273>`_ -- `ARM ARM v7 A&R <https://www.cs.utexas.edu/~simon/378/resources/ARMv7-AR_TRM.pdf>`_ and `Cortex R4 TRM <http://infocenter.arm.com/help/topic/com.arm.doc.ddi0363g/DDI0363G_cortex_r4_r1p4_trm.pdf>`_;
    - DIGIC 7: Cortex A9 `[3] <http://chdk.setepontos.com/index.php?topic=13014.msg131110#msg131110>`_ -- `ARM ARM v7 A&R <https://www.cs.utexas.edu/~simon/378/resources/ARMv7-AR_TRM.pdf>`_ and `Cortex A9 TRM <http://infocenter.arm.com/help/topic/com.arm.doc.ddi0388f/DDI0388F_cortex_a9_r2p2_trm.pdf>`_.
 
@@ -1036,7 +1036,7 @@ is a bit more time-consuming, but it's not difficult.
 Are there any good docs on QEMU internals?
 ``````````````````````````````````````````
 
-- http://nairobi-embedded.org/category/qemu.html
+- `http://nairobi-embedded.org/category/qemu.html <https://web.archive.org/web/20180324054427/http://nairobi-embedded.org/category/qemu.html>`_ (archived)
 - http://blog.vmsplice.net
 - QEMU mailing list (huge!)
 - Xilinx QEMU
