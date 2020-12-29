@@ -323,14 +323,14 @@ if [  -n "$(lsb_release -i 2>/dev/null | grep -E 'Ubuntu|Debian')" ]; then
         echo
         case $answer in
             1)
-                if [  -z "$(uname -a | grep Microsoft)" ]; then
-                    # ask user for preferred toolchain (non-WSL only)
-                    choose_toolchain
+                # ask user for preferred toolchain
+                choose_toolchain
 
-                    if [ "$TOOLCHAIN_ARCH" == "x86" ]; then
-                        # 32-bit toolchain has some additional dependencies
-                        packages="$packages libc6:i386 libncurses5:i386"
-                    fi
+                # precompiled toolchain has some additional dependencies
+                if [ "$TOOLCHAIN_ARCH" == "x86" ]; then
+                    packages="$packages libc6:i386 libncurses5:i386"
+                else
+                    packages="$packages libc6 libncurses5"
                 fi
                 ;;
             2)
