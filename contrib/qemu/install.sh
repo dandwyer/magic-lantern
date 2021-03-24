@@ -333,7 +333,8 @@ if [  -n "$(lsb_release -i 2>/dev/null | grep -E 'Ubuntu|Debian')" ]; then
                 if [ "$TOOLCHAIN_ARCH" == "x86" ]; then
                     packages="$packages libc6:i386 libncurses5:i386"
                 else
-                    packages="$packages libc6 libncurses5"
+                    # assuming x86-64 aka amd64
+                    packages="$packages libc6:amd64 libncurses5:amd64"
                 fi
                 ;;
             2)
